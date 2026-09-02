@@ -1,0 +1,69 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import { getCollection } from "astro:content";
+
+const photos = await getCollection("gallery");
+
+const categories = [
+  { key: "events", label: "Local Events" },
+  { key: "critters", label: "Local Critters" },
+  { key: "weather", label: "Local Weather" },
+  { key: "neighborhood", label: "Neighborhood" },
+] as const;
+
+const grouped = categories
+  .map((cat) => ({ ...cat, items: photos.filter((p) => p.data.category === cat.key) }))
+  .filter((g) => g.items.length > 0);
+---
+
+<BaseLayout title="Community Gallery" description="Photos from around the Bent Grass neighborhood, shared by residents.">
+  <PageHeader
+    eyebrow="Show us Bent Grass"
+    title="Community Gallery"
+    description="A space for neighbors to share photos of neighborhood life — events, wildlife, sunsets, and everything in between."
+  />
+
+  <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    {grouped.length === 0 ? (
+      <div class="rounded-2xl border border-dashed border-brand-300 bg-white p-10 text-center">
+        <p class="font-display text-xl font-semibold text-brand-900">No photos yet — be the first!</p>
+        <p class="mx-auto mt-2 max-w-md text-brand-600">
+          Have a great shot from a neighborhood event, local wildlife, or a Colorado sky? Send it our way and we'll
+          add it here.
+        </p>
+        <a
+          href="mailto:bentgrassneighborhood@gmail.com?subject=Community%20Gallery%20photo"
+          class="mt-6 inline-flex items-center justify-center rounded-full bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-800"
+        >
+          Submit a photo
+        </a>
+        <p class="mx-auto mt-4 max-w-md text-xs text-brand-500">
+          Please share original photos only, and be mindful of privacy for anyone identifiable in the shot.
+        </p>
+      </div>
+    ) : (
+      <div class="flex flex-col gap-10">
+        {grouped.map((group) => (
+          <div>
+            <h2 class="font-display text-2xl font-semibold text-brand-900">{group.label}</h2>
+            <div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+              {group.items.map((photo) => (
+                <figure class="overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-sm">
+                  <img src={photo.data.image} alt={photo.data.title} class="aspect-square w-full object-cover" loading="lazy" />
+                  <figcaption class="p-3 text-sm text-brand-700">{photo.data.title}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        ))}
+        <div class="rounded-2xl border border-dashed border-brand-300 bg-white p-6 text-center">
+          <p class="text-brand-700">Have a photo to add?</p>
+          <a href="mailto:bentgrassneighborhood@gmail.com?subject=Community%20Gallery%20photo" class="font-semibold text-brand-800 hover:text-brand-900">
+            Send it our way &rarr;
+          </a>
+        </div>
+      </div>
+    )}
+  </section>
+</BaseLayout>

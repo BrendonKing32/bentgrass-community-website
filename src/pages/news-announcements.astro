@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import NewsCard from "../components/NewsCard.astro";
+import { getCollection } from "astro:content";
+
+const news = (await getCollection("news")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title="News & Announcements" description="The latest news and announcements from the Bent Grass neighborhood.">
+  <PageHeader
+    eyebrow="Stay informed"
+    title="News & Announcements"
+    description="Updates from around the neighborhood — event recaps, new resources, and things worth knowing."
+  />
+
+  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    {news.length === 0 ? (
+      <p class="text-brand-600">No news yet — check back soon!</p>
+    ) : (
+      <div class="flex flex-col gap-6">
+        {news.map((item) => <NewsCard entry={item} />)}
+      </div>
+    )}
+  </section>
+</BaseLayout>

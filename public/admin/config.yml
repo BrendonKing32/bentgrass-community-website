@@ -1,0 +1,116 @@
+backend:
+  name: github
+  repo: BrendonKing32/bentgrass-community-website
+  branch: main
+  base_url: https://www.bentgrassneighborhood.org
+  auth_endpoint: api/auth
+
+publish_mode: simple
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: news
+    label: "News & Announcements"
+    folder: "src/content/news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Summary", name: "summary", widget: "text", required: false, hint: "Shown in the homepage preview." }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: events
+    label: "Events & Calendar"
+    folder: "src/content/events"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Start Date", name: "date", widget: "datetime" }
+      - { label: "End Date (multi-day events)", name: "endDate", widget: "datetime", required: false }
+      - { label: "Time", name: "time", widget: "string", required: false }
+      - { label: "Location", name: "location", widget: "string", required: false }
+      - { label: "Link URL", name: "link", widget: "string", required: false }
+      - { label: "Link Label", name: "linkLabel", widget: "string", required: false }
+      - { label: "Details", name: "body", widget: "markdown" }
+
+  - name: newsletters
+    label: "Monthly Newsletters"
+    folder: "src/content/newsletters"
+    create: true
+    slug: "{{year}}-{{month}}-newsletter"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Newsletter URL", name: "url", widget: "string", required: false }
+
+  - name: faq
+    label: "FAQ"
+    folder: "src/content/faq"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Question", name: "question", widget: "string" }
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options:
+          - "Getting Started"
+          - "Districts & Governance"
+          - "Covenants & Property Rules"
+          - "Property Use"
+          - "Property, Plots & Lot Info"
+          - "Home Warranty & Builder Resources"
+          - "Improvements"
+          - "Safety & Emergencies"
+          - "Community"
+      - { label: "Order", name: "order", widget: "number", default: 0, hint: "Lower numbers show first within a category." }
+      - { label: "Answer", name: "body", widget: "markdown" }
+
+  - name: resources
+    label: "General Resources"
+    folder: "src/content/resources"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "URL", name: "url", widget: "string" }
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "Emergency & Weather", value: "emergency-weather" }
+          - { label: "Safety", value: "safety" }
+          - { label: "Local Government", value: "local-government" }
+          - { label: "Community & Social", value: "community-social" }
+      - { label: "Order", name: "order", widget: "number", default: 0 }
+      - { label: "Description", name: "body", widget: "markdown", required: false }
+
+  - name: gallery
+    label: "Community Gallery"
+    folder: "src/content/gallery"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title / Caption", name: "title", widget: "string" }
+      - { label: "Photo", name: "image", widget: "image" }
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "Local Events", value: "events" }
+          - { label: "Local Critters", value: "critters" }
+          - { label: "Local Weather", value: "weather" }
+          - { label: "Neighborhood", value: "neighborhood" }
+      - { label: "Date", name: "date", widget: "datetime", required: false }
+      - { label: "Photo Credit", name: "credit", widget: "string", required: false }
+
+  - name: pages
+    label: "District Info Pages"
+    folder: "src/content/pages"
+    create: false
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Body", name: "body", widget: "markdown" }

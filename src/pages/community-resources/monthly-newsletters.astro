@@ -1,0 +1,60 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import { getCollection } from "astro:content";
+
+const newsletters = (await getCollection("newsletters")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const byYear = newsletters.reduce<Record<string, typeof newsletters>>((acc, item) => {
+  const year = String(item.data.date.getFullYear());
+  acc[year] = acc[year] ? [...acc[year], item] : [item];
+  return acc;
+}, {});
+const years = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
+---
+
+<BaseLayout title="Monthly Newsletters" description="Archive of the Bent Grass Neighbors monthly newsletter.">
+  <PageHeader
+    eyebrow="Community Resources"
+    title="Monthly Newsletters"
+    description="Catch up on local events, board updates, and seasonal information."
+  />
+
+  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <div class="mb-10 rounded-2xl border border-brand-200 bg-white p-6 shadow-sm">
+      <p class="font-semibold text-brand-800">Haven't subscribed yet?</p>
+      <p class="mt-1 text-brand-600">Get the newsletter delivered straight to your inbox, once a month.</p>
+      <a
+        href="https://buttondown.com/bentgrassneighborhood"
+        target="_blank"
+        rel="noopener"
+        class="mt-4 inline-flex items-center justify-center rounded-full bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-800"
+      >
+        Subscribe to the newsletter
+      </a>
+    </div>
+
+    {years.length === 0 ? (
+      <p class="text-brand-600">No newsletters archived yet — check back soon!</p>
+    ) : (
+      years.map((year) => (
+        <div class="mb-8">
+          <h2 class="font-display text-2xl font-semibold text-brand-900">{year}</h2>
+          <ul class="mt-4 flex flex-col gap-3">
+            {byYear[year].map((item) => (
+              <li class="rounded-xl border border-brand-200 bg-white p-4 shadow-sm">
+                {item.data.url ? (
+                  <a href={item.data.url} target="_blank" rel="noopener" class="font-semibold text-brand-700 hover:text-brand-900">
+                    {item.data.title} &rarr;
+                  </a>
+                ) : (
+                  <span class="font-semibold text-brand-700">{item.data.title}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    )}
+  </section>
+</BaseLayout>

@@ -1,0 +1,114 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import NewsCard from "../components/NewsCard.astro";
+import EventCard from "../components/EventCard.astro";
+import { getCollection } from "astro:content";
+
+const news = (await getCollection("news")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
+
+const now = new Date();
+const upcomingEvents = (await getCollection("events"))
+  .filter((e) => (e.data.endDate ?? e.data.date) >= now)
+  .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf())
+  .slice(0, 3);
+
+const quickLinks = [
+  { label: "News & Announcements", href: "/news-announcements", icon: "📰" },
+  { label: "Events & Calendar", href: "/events-calendar", icon: "📅" },
+  { label: "Community Resources", href: "/community-resources/general-resources", icon: "🧭" },
+  { label: "FAQ", href: "/faq", icon: "❓" },
+  { label: "Community Gallery", href: "/community-gallery", icon: "📸" },
+  { label: "Contact / Get Involved", href: "/contact-get-involved", icon: "🤝" },
+];
+---
+
+<BaseLayout title="Bent Grass Neighborhood">
+  <section class="relative overflow-hidden bg-brand-900">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(123,171,97,0.35),transparent_55%)]"></div>
+    <div class="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+      <p class="text-sm font-semibold uppercase tracking-widest text-brand-300">Falcon / Peyton, Colorado</p>
+      <h1 class="mt-3 max-w-2xl font-display text-4xl font-semibold text-white sm:text-5xl">
+        Welcome to Bent Grass!
+      </h1>
+      <p class="mt-5 max-w-2xl text-lg text-brand-100">
+        A volunteer-led community resource created by local residents to make it easier to navigate neighborhood
+        life — events, local resources, and guidance on who to contact for common questions.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/events-calendar" class="rounded-full bg-accent-500 px-6 py-3 text-sm font-semibold text-brand-950 shadow hover:bg-accent-400">
+          See what's happening
+        </a>
+        <a href="/faq" class="rounded-full border border-brand-400 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-800">
+          Browse the FAQ
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <div class="rounded-2xl border border-brand-200 bg-white p-5 text-sm text-brand-700 shadow-sm">
+      Bent Grass sits within two overlapping metro districts — <strong>Woodmen Hills Metro District (WHMD)</strong>
+      and <strong>Bent Grass Metro District (BGMD)</strong>. With multiple entities providing services, it's easy to
+      get confused about who to contact. This site consolidates events, resources, and guidance in one place.
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+    <h2 class="font-display text-2xl font-semibold text-brand-900">Quick Links</h2>
+    <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {quickLinks.map((link) => (
+        <a
+          href={link.href}
+          class="group flex items-center gap-4 rounded-2xl border border-brand-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-400 hover:shadow-md"
+        >
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xl" aria-hidden="true">
+            {link.icon}
+          </span>
+          <span class="font-semibold text-brand-800 group-hover:text-brand-900">{link.label}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  {upcomingEvents.length > 0 && (
+    <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div class="flex items-baseline justify-between">
+        <h2 class="font-display text-2xl font-semibold text-brand-900">Upcoming Events</h2>
+        <a href="/events-calendar" class="text-sm font-semibold text-brand-700 hover:text-brand-900">View all &rarr;</a>
+      </div>
+      <div class="mt-5 grid gap-5 md:grid-cols-3">
+        {upcomingEvents.map((event) => <EventCard entry={event} />)}
+      </div>
+    </section>
+  )}
+
+  {news.length > 0 && (
+    <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div class="flex items-baseline justify-between">
+        <h2 class="font-display text-2xl font-semibold text-brand-900">Latest News</h2>
+        <a href="/news-announcements" class="text-sm font-semibold text-brand-700 hover:text-brand-900">View all &rarr;</a>
+      </div>
+      <div class="mt-5 grid gap-5 md:grid-cols-3">
+        {news.map((item) => <NewsCard entry={item} compact />)}
+      </div>
+    </section>
+  )}
+
+  <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <div class="rounded-3xl bg-brand-700 px-6 py-10 text-center sm:px-12">
+      <h2 class="font-display text-2xl font-semibold text-white">Stay in the loop</h2>
+      <p class="mx-auto mt-3 max-w-xl text-brand-100">
+        Get the Bent Grass Neighbors newsletter in your inbox — event updates, announcements, and neighborhood tips,
+        once a month.
+      </p>
+      <a
+        href="https://buttondown.com/bentgrassneighborhood"
+        target="_blank"
+        rel="noopener"
+        class="mt-6 inline-flex items-center justify-center rounded-full bg-accent-500 px-6 py-3 text-sm font-semibold text-brand-950 shadow hover:bg-accent-400"
+      >
+        Subscribe to the newsletter
+      </a>
+    </div>
+  </section>
+</BaseLayout>

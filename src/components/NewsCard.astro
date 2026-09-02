@@ -1,0 +1,29 @@
+---
+import { render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  entry: CollectionEntry<"news">;
+  compact?: boolean;
+}
+
+const { entry, compact = false } = Astro.props;
+const { Content } = await render(entry);
+const formattedDate = entry.data.date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<article class="rounded-2xl border border-brand-200 bg-white p-6 shadow-sm">
+  <p class="text-xs font-semibold uppercase tracking-wide text-brand-500">{formattedDate}</p>
+  <h3 class="mt-1 font-display text-xl font-semibold text-brand-900">{entry.data.title}</h3>
+  {compact ? (
+    <p class="mt-2 text-brand-700">{entry.data.summary}</p>
+  ) : (
+    <div class="prose prose-sm mt-3 max-w-none text-brand-800 prose-headings:font-display">
+      <Content />
+    </div>
+  )}
+</article>

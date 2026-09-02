@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+---
+
+<BaseLayout title="Disclaimer" description="This site is an unofficial, volunteer-run community resource.">
+  <PageHeader eyebrow="Site Info" title="Disclaimer" />
+  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <div class="prose max-w-none prose-headings:font-display prose-a:text-brand-700">
+      <p>
+        This is an unofficial, volunteer-run resource for the Bent Grass / Falcon Meadows community. It operates
+        independently from any government entity or official district, and is not affiliated with or endorsed by
+        the Bent Grass Metropolitan District, Woodmen Hills Metropolitan District, El Paso County, or any other
+        government body.
+      </p>
+      <p>
+        The site is maintained by volunteers rather than legal or official personnel. Content is presented for
+        general informational purposes only and isn't legal, financial, or professional advice.
+      </p>
+      <h2>Liability</h2>
+      <p>
+        Please double-check directly with the relevant district, El Paso County, or a qualified professional before
+        making decisions involving covenants, permits, property improvements, rentals, or regulations. The
+        volunteers who maintain this site do their best to keep it accurate, but can't be held responsible for
+        losses or consequences arising from reliance on the information provided.
+      </p>
+      <h2>Contact</h2>
+      <p>
+        Spot something inaccurate or out of date? Let us know at{" "}
+        <a href="mailto:bentgrassneighborhood@gmail.com">bentgrassneighborhood@gmail.com</a> or (719) 401-1119.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

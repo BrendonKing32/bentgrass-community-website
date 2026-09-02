@@ -1,0 +1,86 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+
+const officialContacts = [
+  { issue: "Covenants & district matters", contact: "Bent Grass Metropolitan District", href: "https://bentgrassmd.colorado.gov" },
+  { issue: "Zoning & property issues", contact: "El Paso County Code Enforcement", href: "https://www.elpasoco.com/" },
+  { issue: "Non-emergency law enforcement", contact: "El Paso County Sheriff's Office", href: "https://epcsheriffsoffice.com/" },
+  { issue: "Emergencies", contact: "911", href: "tel:911" },
+];
+
+const waysToHelp = [
+  "Share news, road closures, lost pets, events, or safety notices",
+  "Volunteer at neighborhood events (cleanups, yard sales, setup/logistics)",
+  "Report broken links or outdated information",
+  "Suggest missing resources or topics",
+  "Help maintain the website or coordinate events behind the scenes",
+];
+---
+
+<BaseLayout title="Contact / Get Involved" description="Reach the volunteers behind this site, or find out who to contact for official matters.">
+  <PageHeader
+    eyebrow="Run by neighbors, for neighbors"
+    title="Contact / Get Involved"
+    description="Questions, updates, or want to volunteer? We'd love to hear from you."
+  />
+
+  <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    <div class="grid gap-8 lg:grid-cols-2">
+      <div class="rounded-2xl border border-brand-200 bg-white p-6 shadow-sm">
+        <h2 class="font-display text-xl font-semibold text-brand-900">Get in touch</h2>
+        <ul class="mt-4 space-y-3 text-brand-700">
+          <li>
+            <a href="mailto:bentgrassneighborhood@gmail.com" class="font-semibold text-brand-800 hover:text-brand-900">
+              bentgrassneighborhood@gmail.com
+            </a>
+          </li>
+          <li>
+            <a href="tel:+17194011119" class="font-semibold text-brand-800 hover:text-brand-900">(719) 401-1119</a>
+          </li>
+          <li>
+            <a href="https://www.facebook.com/groups/bentgrassmeadows" target="_blank" rel="noopener" class="font-semibold text-brand-800 hover:text-brand-900">
+              Bent Grass Neighbors Facebook Page
+            </a>
+          </li>
+        </ul>
+        <p class="mt-4 text-sm text-brand-500">
+          This site is volunteer-run and not monitored in real time — for anything urgent, use the official
+          contacts below.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-brand-200 bg-white p-6 shadow-sm">
+        <h2 class="font-display text-xl font-semibold text-brand-900">Ways to get involved</h2>
+        <ul class="mt-4 space-y-2 text-brand-700">
+          {waysToHelp.map((item) => (
+            <li class="flex gap-2">
+              <span class="text-brand-500" aria-hidden="true">•</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-8 overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-sm">
+      <div class="border-b border-brand-200 bg-brand-50 px-6 py-4">
+        <h2 class="font-display text-xl font-semibold text-brand-900">Official contacts for specific issues</h2>
+      </div>
+      <table class="w-full text-left text-sm">
+        <tbody class="divide-y divide-brand-100">
+          {officialContacts.map((row) => (
+            <tr>
+              <td class="px-6 py-4 text-brand-700">{row.issue}</td>
+              <td class="px-6 py-4">
+                <a href={row.href} target={row.href.startsWith("tel:") ? undefined : "_blank"} rel="noopener" class="font-semibold text-brand-800 hover:text-brand-900">
+                  {row.contact}
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</BaseLayout>

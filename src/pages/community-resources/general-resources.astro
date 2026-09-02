@@ -1,0 +1,59 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import { getCollection, render } from "astro:content";
+
+const resources = await getCollection("resources");
+
+const categories = [
+  { key: "emergency-weather", label: "Emergency & Weather" },
+  { key: "safety", label: "Safety" },
+  { key: "local-government", label: "Local Government" },
+  { key: "community-social", label: "Community & Social" },
+] as const;
+
+const grouped = await Promise.all(
+  categories.map(async (cat) => {
+    const items = resources
+      .filter((r) => r.data.category === cat.key)
+      .sort((a, b) => a.data.order - b.data.order);
+    const withContent = await Promise.all(
+      items.map(async (item) => ({ item, Content: (await render(item)).Content }))
+    );
+    return { ...cat, items: withContent };
+  })
+);
+---
+
+<BaseLayout title="General Resources" description="Handy links for weather, safety, local government, and community.">
+  <PageHeader
+    eyebrow="Community Resources"
+    title="General Resources"
+    description="A handful of links residents reach for most — emergency info, local government, and community spaces."
+  />
+
+  <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    <div class="flex flex-col gap-10">
+      {grouped.map((group) => group.items.length > 0 && (
+        <div>
+          <h2 class="font-display text-2xl font-semibold text-brand-900">{group.label}</h2>
+          <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            {group.items.map(({ item, Content }) => (
+              <a
+                href={item.data.url}
+                target="_blank"
+                rel="noopener"
+                class="group rounded-2xl border border-brand-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-400 hover:shadow-md"
+              >
+                <p class="font-semibold text-brand-800 group-hover:text-brand-900">{item.data.title}</p>
+                <div class="prose prose-sm mt-1 max-w-none text-brand-600">
+                  <Content />
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
