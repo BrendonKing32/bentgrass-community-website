@@ -1,6 +1,6 @@
 # Bent Grass Neighborhood Website
 
-The Bent Grass / Falcon Meadows community site — rebuilt as a static [Astro](https://astro.build) site, styled with Tailwind CSS, deployed on [Cloudflare Pages](https://pages.cloudflare.com), and editable by volunteers through a browser-based content admin ([Decap CMS](https://decapcms.org)).
+The Bent Grass / Falcon Meadows community site — rebuilt as a static [Astro](https://astro.build) site, styled with Tailwind CSS, deployed on [Cloudflare Workers](https://developers.cloudflare.com/workers/static-assets/) (static assets + a small Worker for the content-admin login flow), and editable by volunteers through a browser-based content admin ([Decap CMS](https://decapcms.org)).
 
 Live site: https://www.bentgrassneighborhood.org
 
@@ -21,7 +21,8 @@ src/
   pages/           Routes — mostly thin wrappers that query content/ and render it
 public/
   admin/           Decap CMS admin UI (config.yml + index.html)
-functions/api/     Cloudflare Pages Functions implementing GitHub OAuth for Decap CMS
+functions/api/     GitHub OAuth handlers for Decap CMS, written as Pages Functions and
+                   compiled into the Worker at build time (see wrangler.jsonc)
 ```
 
 Every page except the home page and the "district info" pages (WHMD/BGMD) is generated from a **content collection** — adding, editing, or removing a markdown file in `src/content/` is enough to change what's on the site. No code changes needed for routine updates.
@@ -30,42 +31,50 @@ Every page except the home page and the "district info" pages (WHMD/BGMD) is gen
 
 ```sh
 npm install
-npm run dev          # http://localhost:4321
-npm run build         # outputs static site to ./dist
-npm run preview       # preview the production build locally
+npm run dev          # Astro dev server at http://localhost:4321 (fast iteration, no OAuth functions)
+npm run build         # astro build, then compiles functions/api/* into ./dist/_worker.js
+npm run preview       # runs the full Worker locally via `wrangler dev` (assets + OAuth functions)
+npm run deploy        # `wrangler deploy` — ships the current ./dist build to Cloudflare
 ```
 
 This repo's `AGENTS.md` documents running `astro dev --background` for agent-driven workflows.
 
 ## Editing content
 
-**Option A — edit markdown directly.** Every collection in `src/content/` is a folder of `.md` files with frontmatter. Copy an existing file as a template, edit it, commit, and push — Cloudflare Pages rebuilds and redeploys automatically.
+**Option A — edit markdown directly.** Every collection in `src/content/` is a folder of `.md` files with frontmatter. Copy an existing file as a template, edit it, commit, and push — the connected Cloudflare Workers Build rebuilds and redeploys automatically.
 
 **Option B — use the content admin at `/admin`.** Once GitHub OAuth is configured (see below), anyone with access to the GitHub repo can go to `https://www.bentgrassneighborhood.org/admin`, log in with GitHub, and add/edit News, Events, Newsletters, FAQ, Resources, and Gallery photos through a form UI. Saving creates a commit directly on the `main` branch, which triggers a rebuild.
 
-## Deployment (Cloudflare Pages)
+## Deployment (Cloudflare Workers)
 
-1. In the Cloudflare dashboard, create a new **Pages** project connected to the `BrendonKing32/bentgrass-community-website` GitHub repo.
-2. Build settings:
+This site deploys as a **Worker with static assets** (Cloudflare's current recommended setup — Pages projects now deploy on the same underlying infrastructure). `wrangler.jsonc` at the repo root defines the Worker: it serves everything in `./dist` as static assets, and routes `/api/auth` and `/api/callback` (compiled from `functions/api/`) to the OAuth Worker code.
+
+**One-time setup — connect the repo for automatic deploys:**
+
+1. In the Cloudflare dashboard, go to **Workers & Pages → Create application → Import a repository**, and connect the `BrendonKing32/bentgrass-community-website` GitHub repo.
+2. Cloudflare will detect `wrangler.jsonc` and pre-fill the build/deploy commands. Confirm:
    - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-   - **Root directory:** `/`
-3. Cloudflare Pages will automatically detect and deploy the `functions/api/*` files as Pages Functions — no extra config needed.
-4. Add your custom domain (`www.bentgrassneighborhood.org`, and a redirect from the bare domain) under the Pages project's **Custom domains** tab, then update DNS at your registrar/DNS host to point at Cloudflare (or move the zone to Cloudflare DNS entirely for the simplest setup).
+   - **Deploy command:** `npx wrangler deploy`
+3. Select **Save and Deploy**. Every push to `main` now triggers a **Workers Build** that rebuilds and redeploys automatically (Settings → Builds on the Worker if you need to change the branch later).
+4. Once your domain's DNS zone is active on Cloudflare, add the custom domain: Worker → **Settings → Domains & Routes → Add → Custom Domain**, enter `www.bentgrassneighborhood.org`. (You can also uncomment the `routes` block already sketched out in `wrangler.jsonc` and let a deploy create it instead.) Add a redirect rule from the bare domain to `www` under the zone's **Rules → Redirect Rules**.
 5. Keep the existing Google Sites site live until DNS has fully cut over and you've spot-checked the new site.
+
+**Manual/one-off deploys** (no git push needed): `npm run build && npm run deploy` from your machine, using an authenticated `wrangler` (run `npx wrangler login` once).
 
 ## Setting up the content admin (GitHub OAuth)
 
-Decap CMS needs a GitHub OAuth App so it can commit on behalf of logged-in editors. This repo already includes the Cloudflare Pages Functions (`functions/api/auth.js` and `functions/api/callback.js`) that handle the OAuth handshake — you just need to create the OAuth App and set two environment variables.
+Decap CMS needs a GitHub OAuth App so it can commit on behalf of logged-in editors. This repo already includes the OAuth handlers (`functions/api/auth.js` and `functions/api/callback.js`), compiled into the Worker at build time — you just need to create the OAuth App and set two secrets on the Worker.
 
 1. In GitHub, go to **Settings → Developer settings → OAuth Apps → New OAuth App** (or create it under the organization/account that owns this repo).
    - **Homepage URL:** `https://www.bentgrassneighborhood.org`
    - **Authorization callback URL:** `https://www.bentgrassneighborhood.org/api/callback`
 2. Copy the generated **Client ID** and generate a **Client Secret**.
-3. In the Cloudflare Pages project settings, under **Environment variables**, add (for the Production environment):
-   - `GITHUB_OAUTH_CLIENT_ID`
-   - `GITHUB_OAUTH_CLIENT_SECRET`
-4. Redeploy. Anyone with **write access to the GitHub repo** can now sign in at `/admin` and edit content. (Decap's GitHub backend authorizes based on repo permissions — there's no separate user list to manage.)
+3. Set them as Worker secrets — either via the dashboard (Worker → **Settings → Variables and Secrets → Add**, type **Secret**) or from the CLI:
+   ```sh
+   npx wrangler secret put GITHUB_OAUTH_CLIENT_ID
+   npx wrangler secret put GITHUB_OAUTH_CLIENT_SECRET
+   ```
+4. Secrets set via the dashboard trigger a redeploy automatically; via Wrangler, `secret put` deploys immediately. Anyone with **write access to the GitHub repo** can now sign in at `/admin` and edit content. (Decap's GitHub backend authorizes based on repo permissions — there's no separate user list to manage.)
 
 ## Content notes
 

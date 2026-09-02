@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bentgrass-community-website",
+  "compatibility_date": "2026-09-02",
+  "main": "./dist/_worker.js",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS"
+  }
+  // Once the domain's zone is active on Cloudflare (see README "Deployment"),
+  // either add a Custom Domain via the dashboard, or uncomment:
+  // "routes": [{ "pattern": "www.bentgrassneighborhood.org", "custom_domain": true }]
+}
