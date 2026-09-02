@@ -6,7 +6,14 @@
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS"
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "bentgrass-newsletter",
+      "database_id": "6c78725c-daf9-47dc-b3e4-45b594251c8c"
+    }
+  ]
   // Once the domain's zone is active on Cloudflare (see README "Deployment"),
   // either add a Custom Domain via the dashboard, or uncomment:
   // "routes": [{ "pattern": "www.bentgrassneighborhood.org", "custom_domain": true }]

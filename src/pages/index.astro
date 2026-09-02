@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import NewsCard from "../components/NewsCard.astro";
 import EventCard from "../components/EventCard.astro";
+import NewsletterSignup from "../components/NewsletterSignup.astro";
 import { getCollection } from "astro:content";
 
 const news = (await getCollection("news")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
@@ -101,14 +102,9 @@ const quickLinks = [
         Get the Bent Grass Neighbors newsletter in your inbox — event updates, announcements, and neighborhood tips,
         once a month.
       </p>
-      <a
-        href="https://buttondown.com/bentgrassneighborhood"
-        target="_blank"
-        rel="noopener"
-        class="mt-6 inline-flex items-center justify-center rounded-full bg-accent-500 px-6 py-3 text-sm font-semibold text-brand-950 shadow hover:bg-accent-400"
-      >
-        Subscribe to the newsletter
-      </a>
+      <div class="mt-6">
+        <NewsletterSignup variant="dark" />
+      </div>
     </div>
   </section>
 </BaseLayout>
