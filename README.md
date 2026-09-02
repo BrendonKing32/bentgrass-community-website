@@ -66,9 +66,11 @@ This site deploys as a **Worker with static assets** (Cloudflare's current recom
 
 Decap CMS needs a GitHub OAuth App so it can commit on behalf of logged-in editors. This repo already includes the OAuth handlers (`functions/api/auth.js` and `functions/api/callback.js`), compiled into the Worker at build time — you just need to create the OAuth App and set two secrets on the Worker.
 
+The Homepage/callback URLs below, and `base_url` in `public/admin/config.yml`, must all point at whatever origin the site is actually reachable at **right now**. Until the custom domain is wired up, that's the `*.workers.dev` URL, not `www.bentgrassneighborhood.org` — using the wrong one breaks the login popup. Once the custom domain goes live, update both (see "Switching to the custom domain" below).
+
 1. In GitHub, go to **Settings → Developer settings → OAuth Apps → New OAuth App** (or create it under the organization/account that owns this repo).
-   - **Homepage URL:** `https://www.bentgrassneighborhood.org`
-   - **Authorization callback URL:** `https://www.bentgrassneighborhood.org/api/callback`
+   - **Homepage URL:** `https://bentgrass-community-website.brendonking-934.workers.dev`
+   - **Authorization callback URL:** `https://bentgrass-community-website.brendonking-934.workers.dev/api/callback`
 2. Copy the generated **Client ID** and generate a **Client Secret**.
 3. Set them as Worker secrets — either via the dashboard (Worker → **Settings → Variables and Secrets → Add**, type **Secret**) or from the CLI:
    ```sh
@@ -76,6 +78,16 @@ Decap CMS needs a GitHub OAuth App so it can commit on behalf of logged-in edito
    npx wrangler secret put GITHUB_OAUTH_CLIENT_SECRET
    ```
 4. Secrets set via the dashboard trigger a redeploy automatically; via Wrangler, `secret put` deploys immediately. Anyone with **write access to the GitHub repo** can now sign in at `/admin` and edit content. (Decap's GitHub backend authorizes based on repo permissions — there's no separate user list to manage.)
+
+### Switching to the custom domain
+
+Once `www.bentgrassneighborhood.org` is wired up (see "Deployment" above) and serving the site, admin login needs to move over too:
+
+1. In the GitHub OAuth App's settings, update **Homepage URL** and **Authorization callback URL** to use `https://www.bentgrassneighborhood.org` instead of the `*.workers.dev` URL.
+2. In `public/admin/config.yml`, update `base_url` to `https://www.bentgrassneighborhood.org` and remove the `TODO` comment above it, then commit and push.
+3. The Client ID/Secret themselves don't change — no need to regenerate or re-run `wrangler secret put`.
+
+The `*.workers.dev` URL keeps working as a fallback for the rest of the site either way, but `/admin` will only work against the one origin currently set in `config.yml`.
 
 ## Newsletter (self-hosted signups)
 
