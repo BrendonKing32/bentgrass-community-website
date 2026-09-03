@@ -3,24 +3,30 @@ import { glob } from 'astro/loaders';
 
 const news = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/news' }),
-  schema: z.object({
-    title: z.string(),
-    date: z.coerce.date(),
-    summary: z.string().optional(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      date: z.coerce.date(),
+      summary: z.string().optional(),
+      coverImage: image().optional(),
+      coverImageAlt: z.string().optional(),
+    }),
 });
 
 const events = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/events' }),
-  schema: z.object({
-    title: z.string(),
-    date: z.coerce.date(),
-    endDate: z.coerce.date().optional(),
-    time: z.string().optional(),
-    location: z.string().optional(),
-    link: z.string().url().optional(),
-    linkLabel: z.string().optional(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      date: z.coerce.date(),
+      endDate: z.coerce.date().optional(),
+      time: z.string().optional(),
+      location: z.string().optional(),
+      link: z.string().url().optional(),
+      linkLabel: z.string().optional(),
+      coverImage: image().optional(),
+      coverImageAlt: z.string().optional(),
+    }),
 });
 
 const newsletters = defineCollection({
@@ -60,13 +66,14 @@ const pages = defineCollection({
 
 const gallery = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/gallery' }),
-  schema: z.object({
-    title: z.string(),
-    image: z.string(),
-    category: z.enum(['events', 'critters', 'weather', 'neighborhood']),
-    date: z.coerce.date().optional(),
-    credit: z.string().optional(),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      image: image(),
+      category: z.enum(['events', 'critters', 'weather', 'neighborhood']),
+      date: z.coerce.date().optional(),
+      credit: z.string().optional(),
+    }),
 });
 
 export const collections = { news, events, newsletters, faq, resources, pages, gallery };
