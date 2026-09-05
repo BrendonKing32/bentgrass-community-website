@@ -1,6 +1,7 @@
-// Cloudflare Pages Function: completes the GitHub OAuth flow for Decap CMS.
-// Exchanges the ?code= for an access token and hands it back to the CMS
-// popup window via postMessage, following Decap's github backend protocol.
+// Cloudflare Pages Function: completes the GitHub OAuth flow for the content
+// admin (Sveltia CMS). Exchanges the ?code= for an access token and hands it
+// back to the CMS popup window via postMessage, following Decap's github
+// backend protocol (which Sveltia CMS also implements for compatibility).
 
 function renderScript(message) {
   return `<!doctype html>

@@ -1,6 +1,6 @@
 # Bent Grass Neighborhood Website
 
-The Bent Grass / Falcon Meadows community site — rebuilt as a static [Astro](https://astro.build) site, styled with Tailwind CSS, deployed on [Cloudflare Workers](https://developers.cloudflare.com/workers/static-assets/) (static assets + a small Worker for the content-admin login flow), and editable by volunteers through a browser-based content admin ([Decap CMS](https://decapcms.org)).
+The Bent Grass / Falcon Meadows community site — rebuilt as a static [Astro](https://astro.build) site, styled with Tailwind CSS, deployed on [Cloudflare Workers](https://developers.cloudflare.com/workers/static-assets/) (static assets + a small Worker for the content-admin login flow), and editable by volunteers through a browser-based content admin ([Sveltia CMS](https://github.com/sveltia/sveltia-cms)).
 
 Live site: https://www.bentgrassneighborhood.org
 
@@ -20,7 +20,7 @@ src/
   layouts/         Page shell (BaseLayout)
   pages/           Routes — mostly thin wrappers that query content/ and render it
 public/
-  admin/           Decap CMS admin UI (config.yml + index.html)
+  admin/           Sveltia CMS admin UI (config.yml + index.html)
 functions/api/     GitHub OAuth handlers + the newsletter signup endpoint, written as Pages
                    Functions and compiled into the Worker at build time
 ```
@@ -63,7 +63,7 @@ This site deploys as a **Worker with static assets** (Cloudflare's current recom
 
 ## Setting up the content admin (GitHub OAuth)
 
-Decap CMS needs a GitHub OAuth App so it can commit on behalf of logged-in editors. This repo already includes the OAuth handlers (`functions/api/auth.js` and `functions/api/callback.js`), compiled into the Worker at build time — you just need to create the OAuth App and set two secrets on the Worker.
+Sveltia CMS needs a GitHub OAuth App so it can commit on behalf of logged-in editors. This repo already includes the OAuth handlers (`functions/api/auth.js` and `functions/api/callback.js`), compiled into the Worker at build time — you just need to create the OAuth App and set two secrets on the Worker.
 
 The Homepage/callback URLs below, and `base_url` in `public/admin/config.yml`, must all point at whatever origin the site is actually reachable at **right now**. Until the custom domain is wired up, that's the `*.workers.dev` URL, not `www.bentgrassneighborhood.org` — using the wrong one breaks the login popup. Once the custom domain goes live, update both (see "Switching to the custom domain" below).
 
@@ -76,7 +76,7 @@ The Homepage/callback URLs below, and `base_url` in `public/admin/config.yml`, m
    npx wrangler secret put GITHUB_OAUTH_CLIENT_ID
    npx wrangler secret put GITHUB_OAUTH_CLIENT_SECRET
    ```
-4. Secrets set via the dashboard trigger a redeploy automatically; via Wrangler, `secret put` deploys immediately. Anyone with **write access to the GitHub repo** can now sign in at `/admin` and edit content. (Decap's GitHub backend authorizes based on repo permissions — there's no separate user list to manage.)
+4. Secrets set via the dashboard trigger a redeploy automatically; via Wrangler, `secret put` deploys immediately. Anyone with **write access to the GitHub repo** can now sign in at `/admin` and edit content. (Sveltia's GitHub backend authorizes based on repo permissions — there's no separate user list to manage.)
 
 ### Switching to the custom domain
 
