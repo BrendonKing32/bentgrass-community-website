@@ -21,9 +21,8 @@ src/
   pages/           Routes — mostly thin wrappers that query content/ and render it
 public/
   admin/           Decap CMS admin UI (config.yml + index.html)
-functions/api/     GitHub OAuth handlers + newsletter signup/unsubscribe/export endpoints,
-                   written as Pages Functions and compiled into the Worker at build time
-migrations/        D1 schema migrations for the newsletter subscriber list
+functions/api/     GitHub OAuth handlers + the newsletter signup endpoint, written as Pages
+                   Functions and compiled into the Worker at build time
 ```
 
 Every page except the home page and the "district info" pages (WHMD/BGMD) is generated from a **content collection** — adding, editing, or removing a markdown file in `src/content/` is enough to change what's on the site. No code changes needed for routine updates.
@@ -89,17 +88,14 @@ Once `www.bentgrassneighborhood.org` is wired up (see "Deployment" above) and se
 
 The `*.workers.dev` URL keeps working as a fallback for the rest of the site either way, but `/admin` will only work against the one origin currently set in `config.yml`.
 
-## Newsletter (self-hosted signups)
+## Newsletter (Buttondown)
 
-Instead of Buttondown, the "Subscribe to the newsletter" form on the home page and the Monthly Newsletters page posts to `/api/subscribe` (`functions/api/subscribe.js`), which stores the email in a Cloudflare **D1** database (bound as `DB`, database name `bentgrass-newsletter`; schema in `migrations/`).
+The "Subscribe to the newsletter" form on the home page and the Monthly Newsletters page posts to `/api/subscribe` (`functions/api/subscribe.js`), which creates the subscriber directly through [Buttondown's API](https://docs.buttondown.com/api-subscribers-create). Buttondown owns the subscriber list, the double opt-in confirmation email, sending issues, and per-subscriber unsubscribe links — this site never sees or stores the list itself.
 
-**What this does and doesn't do:** it replaces Buttondown for *collecting* subscribers and hosting the archive. It does **not** send the actual emails — Cloudflare Workers has no bulk/marketing email product (its native Email Service is transactional-only and caps a single send at 50 recipients), so there's no drop-in equivalent. To send an issue, export the list and paste it into whatever you're using to compose and send (an email client's BCC field, or a transactional email API like Resend if you want that automated later).
-
-- **Export subscribers:** `GET /api/subscribers?token=<NEWSLETTER_ADMIN_TOKEN>` returns a CSV of active (non-unsubscribed) emails. Set the token with `npx wrangler secret put NEWSLETTER_ADMIN_TOKEN` (already set on the live Worker — ask whoever last ran it, or rotate it with the same command). Keep the URL private; anyone with the token can download the list.
-- **Unsubscribe:** `GET /api/unsubscribe?token=<per-subscriber token>` marks a subscriber unsubscribed and shows a confirmation page. Each subscriber's unique token is in the `unsubscribe_token` column — include a link like `https://www.bentgrassneighborhood.org/api/unsubscribe?token=THEIR_TOKEN` in the footer of every issue you send (query it alongside the email export, or `SELECT email, unsubscribe_token FROM subscribers WHERE unsubscribed_at IS NULL` via `wrangler d1 execute`).
-- **Spam protection:** the signup form has a hidden honeypot field; bots that fill it in get a fake "success" redirect without being inserted.
-- **Local development:** `npx wrangler d1 migrations apply bentgrass-newsletter --local` sets up the local D1 copy, and a `.dev.vars` file with `NEWSLETTER_ADMIN_TOKEN=<anything>` lets `npm run preview` (`wrangler dev`) exercise the export endpoint locally.
-- **Schema changes:** add a new file to `migrations/` (e.g. `0002_*.sql`), then apply it with `npx wrangler d1 migrations apply bentgrass-newsletter --remote` (and `--local` for your dev copy).
+- **API key:** set the `BUTTONDOWN_API_KEY` secret with `npx wrangler secret put BUTTONDOWN_API_KEY` (a Buttondown API key, from your Buttondown account's API settings). Without it, the signup form redirects with an error.
+- **Spam protection:** the signup form has a hidden honeypot field; bots that fill it in get a fake "success" redirect without ever calling Buttondown.
+- **Local development:** add `BUTTONDOWN_API_KEY=<your key>` to `.dev.vars` so `npm run preview` (`wrangler dev`) can exercise the signup endpoint locally.
+- **Sending issues / managing subscribers:** done entirely in the [Buttondown dashboard](https://buttondown.com/) — compose and send there, and it handles unsubscribes automatically.
 
 ## Content notes
 

@@ -1,5 +1,6 @@
-// Cloudflare Pages Function: handles newsletter signups, storing subscribers
-// in the D1 database bound as `DB` (see wrangler.jsonc).
+// Cloudflare Pages Function: handles newsletter signups by creating a
+// subscriber directly through Buttondown's API. Requires the
+// BUTTONDOWN_API_KEY secret (see README "Newsletter").
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -36,15 +37,25 @@ export async function onRequestPost(context) {
     return redirectTo(redirectBase, "invalid");
   }
 
-  const token = crypto.randomUUID();
+  if (!env.BUTTONDOWN_API_KEY) {
+    return redirectTo(redirectBase, "error");
+  }
 
-  await env.DB.prepare(
-    `INSERT INTO subscribers (email, unsubscribe_token)
-     VALUES (?1, ?2)
-     ON CONFLICT(email) DO UPDATE SET unsubscribed_at = NULL`
-  )
-    .bind(email, token)
-    .run();
+  const response = await fetch("https://api.buttondown.com/v1/subscribers", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Token ${env.BUTTONDOWN_API_KEY}`,
+      // Treat re-subscribing an already-known address as a no-op success
+      // instead of the 400 Buttondown returns for a plain duplicate.
+      "X-Buttondown-Collision-Behavior": "add",
+    },
+    body: JSON.stringify({ email_address: email }),
+  });
+
+  if (!response.ok) {
+    return redirectTo(redirectBase, "invalid");
+  }
 
   return redirectTo(redirectBase, "success");
 }
