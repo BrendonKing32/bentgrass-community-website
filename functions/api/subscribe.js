@@ -41,6 +41,11 @@ export async function onRequestPost(context) {
     return redirectTo(redirectBase, "error");
   }
 
+  // Forward the visitor's real IP so Buttondown's spam firewall scores them
+  // instead of Cloudflare's shared Worker egress IP (which reads as a
+  // datacenter/proxy address and gets blocked as "subscriber_blocked").
+  const visitorIp = request.headers.get("CF-Connecting-IP");
+
   const response = await fetch("https://api.buttondown.com/v1/subscribers", {
     method: "POST",
     headers: {
@@ -50,10 +55,17 @@ export async function onRequestPost(context) {
       // instead of the 400 Buttondown returns for a plain duplicate.
       "X-Buttondown-Collision-Behavior": "add",
     },
-    body: JSON.stringify({ email_address: email }),
+    body: JSON.stringify({
+      email_address: email,
+      ...(visitorIp ? { ip_address: visitorIp } : {}),
+    }),
   });
 
   if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    if (body?.code === "subscriber_blocked") {
+      return redirectTo(redirectBase, "blocked");
+    }
     return redirectTo(redirectBase, "invalid");
   }
 

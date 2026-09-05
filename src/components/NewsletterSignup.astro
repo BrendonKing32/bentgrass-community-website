@@ -41,6 +41,7 @@ const dark = variant === "dark";
     success: { text: "Almost there! Check your inbox for a confirmation email to complete your subscription.", tone: "success" },
     invalid: { text: "That doesn't look like a valid email address — mind trying again?", tone: "error" },
     error: { text: "Something went wrong on our end — mind trying again in a bit?", tone: "error" },
+    blocked: { text: "We couldn't complete that signup — if this keeps happening, email us and we'll add you by hand.", tone: "error" },
   };
 
   const params = new URLSearchParams(window.location.search);
