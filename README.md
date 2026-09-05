@@ -97,6 +97,16 @@ The "Subscribe to the newsletter" form on the home page and the Monthly Newslett
 - **Local development:** add `BUTTONDOWN_API_KEY=<your key>` to `.dev.vars` so `npm run preview` (`wrangler dev`) can exercise the signup endpoint locally.
 - **Sending issues / managing subscribers:** done entirely in the [Buttondown dashboard](https://buttondown.com/) — compose and send there, and it handles unsubscribes automatically.
 
+## Bug reports (public issues repo)
+
+This repo is private, so its own Issues tab isn't reachable by the public — GitHub ties issue visibility to repo visibility, with no way to expose just the tracker. The footer's "Report a broken link" link instead points at a separate, empty public repo, [`bentgrass-community-website-issues`](https://github.com/BrendonKing32/bentgrass-community-website-issues), which exists only to host that public issue form (no source code, Wiki/Projects disabled).
+
+A GitHub Actions workflow in that repo (`.github/workflows/mirror-issue.yml`) mirrors every new issue into this repo automatically, so reports can be triaged, labeled, and linked to PRs alongside the code. It's a one-way mirror — closing or commenting on the private copy doesn't sync back to the public issue.
+
+- **Auth:** the workflow needs a fine-grained GitHub PAT scoped to **Issues: Read and write** on this repo only, stored as the `PRIVATE_REPO_TOKEN` secret on the public repo (`gh secret set PRIVATE_REPO_TOKEN --repo BrendonKing32/bentgrass-community-website-issues`). Without it, mirroring silently fails — check `gh run list --repo BrendonKing32/bentgrass-community-website-issues` if reports stop showing up here.
+- **Expiration:** whatever expiration you set on the PAT, the mirror stops working (no other alert) once it lapses — needs manual renewal.
+- **Abuse:** the public form has no spam filtering — anyone can open an issue there and it'll mirror in. Acceptable for a low-traffic community site; revisit if that changes.
+
 ## Content notes
 
 - **Events** are automatically sorted into "Upcoming" and "Past" based on the event's `date` (or `endDate`, for multi-day events) compared to the time of the most recent build. Since this is a static site, "today" only updates when the site rebuilds — pushing any commit (or editing content through `/admin`) triggers a rebuild.
