@@ -1,45 +1,17 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHeader from "../components/PageHeader.astro";
-import EventCard from "../components/EventCard.astro";
+import CalendarView from "../components/CalendarView.astro";
 import { getCollection } from "astro:content";
 
 const allEvents = await getCollection("events");
-const now = new Date();
-
-const upcoming = allEvents
-  .filter((e) => (e.data.endDate ?? e.data.date) >= now)
-  .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
-
-const past = allEvents
-  .filter((e) => (e.data.endDate ?? e.data.date) < now)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
-<BaseLayout title="Events & Calendar" description="Upcoming and past events in the Bent Grass neighborhood.">
+<BaseLayout title="Events & Calendar" description="Browse upcoming and past events in the Bent Grass neighborhood by month.">
   <PageHeader
     eyebrow="What's happening"
     title="Events & Calendar"
-    description="Local happenings worth putting on your calendar — from neighborhood get-togethers to nearby community events."
+    description="Browse neighborhood happenings by month, open a day for details, and download events for your own calendar."
   />
-
-  <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-    <h2 class="font-display text-2xl font-semibold text-brand-900">Upcoming Events</h2>
-    {upcoming.length === 0 ? (
-      <p class="mt-4 text-brand-600">No upcoming events posted right now — check back soon, or see what's new on the Facebook group.</p>
-    ) : (
-      <div class="mt-5 grid gap-5 md:grid-cols-2">
-        {upcoming.map((event) => <EventCard entry={event} />)}
-      </div>
-    )}
-  </section>
-
-  {past.length > 0 && (
-    <section class="mx-auto max-w-5xl px-4 pb-16 sm:px-6">
-      <h2 class="font-display text-2xl font-semibold text-brand-900">Past Events</h2>
-      <div class="mt-5 grid gap-5 md:grid-cols-2">
-        {past.map((event) => <EventCard entry={event} past />)}
-      </div>
-    </section>
-  )}
+  <CalendarView events={allEvents} />
 </BaseLayout>
