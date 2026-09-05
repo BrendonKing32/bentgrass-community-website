@@ -1,4 +1,4 @@
-// Cloudflare Pages Function: starts the GitHub OAuth flow for Decap CMS.
+// Cloudflare Pages Function: starts the GitHub OAuth flow for the content admin (Sveltia CMS).
 // Requires two environment variables set in the Cloudflare Pages project settings:
 //   GITHUB_OAUTH_CLIENT_ID
 //   GITHUB_OAUTH_CLIENT_SECRET
