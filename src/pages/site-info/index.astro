@@ -1,0 +1,44 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+
+const pages = [
+  {
+    title: "Disclaimer",
+    description: "Who we are (and aren't), and a reminder that we're neighbors doing our best, not lawyers or officials.",
+    href: "/site-info/disclaimer",
+  },
+  {
+    title: "Privacy Policy",
+    description: "What we collect when you visit the site or subscribe to the newsletter, and what we don't do with it.",
+    href: "/site-info/privacy-policy",
+  },
+  {
+    title: "Neutrality Policy",
+    description: "How we stay politically, religiously, and culturally neutral, and how we decide what's worth including for residents and local businesses.",
+    href: "/site-info/neutrality-policy",
+  },
+];
+---
+
+<BaseLayout title="Site Info" description="The fine print — who we are, how we handle your information, and how we decide what goes in the newsletter and on this site.">
+  <PageHeader
+    eyebrow="The fine print"
+    title="Site Info"
+    description="This section is where we keep the boring-but-important stuff about who we are, how we handle your information, and how we decide what goes in the newsletter and on this site. Nothing here is exciting, but it's worth a skim so you know what to expect from us."
+  />
+
+  <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    <div class="grid gap-6 sm:grid-cols-3">
+      {pages.map((page) => (
+        <a
+          href={page.href}
+          class="rounded-2xl border border-brand-200 bg-white p-6 shadow-sm transition hover:border-brand-400 hover:shadow-md"
+        >
+          <h2 class="font-display text-xl font-semibold text-brand-900">{page.title}</h2>
+          <p class="mt-2 text-sm text-brand-700">{page.description}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
