@@ -18,7 +18,7 @@ const formattedDate = entry.data.date.toLocaleDateString("en-US", {
 });
 ---
 
-<article class="overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-sm">
+<article id={`news-${entry.id}`} class="overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-sm">
   {coverImage && (
     <Image
       src={coverImage}

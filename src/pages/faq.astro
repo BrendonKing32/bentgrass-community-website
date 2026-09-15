@@ -42,7 +42,7 @@ const grouped = await Promise.all(
           <h2 class="font-display text-2xl font-semibold text-brand-900">{group.category}</h2>
           <div class="mt-4 flex flex-col gap-3">
             {group.items.map(({ item, Content }) => (
-              <details class="group rounded-xl border border-brand-200 bg-white p-5 shadow-sm open:shadow-md">
+              <details id={`faq-${item.id}`} class="group rounded-xl border border-brand-200 bg-white p-5 shadow-sm open:shadow-md">
                 <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-brand-800 [&::-webkit-details-marker]:hidden">
                   {item.data.question}
                   <svg
@@ -67,3 +67,14 @@ const grouped = await Promise.all(
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  const hash = decodeURIComponent(location.hash.slice(1));
+  if (hash) {
+    const target = document.getElementById(hash);
+    if (target instanceof HTMLDetailsElement) {
+      target.open = true;
+      target.scrollIntoView({ block: "start" });
+    }
+  }
+</script>

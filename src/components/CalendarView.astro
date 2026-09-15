@@ -286,7 +286,19 @@ const eventData = events.map((entry) => {
       renderDetails();
     });
 
+    const hashMatch = location.hash.match(/^#event-(.+)$/);
+    const targetEvent = hashMatch ? events.find((event) => event.id === decodeURIComponent(hashMatch[1])) : undefined;
+    if (targetEvent) {
+      const [year, month] = targetEvent.dateKey.split("-").map(Number);
+      viewDate = new Date(year, month - 1, 1);
+      selectedKey = targetEvent.dateKey;
+    }
+
     renderCalendar();
     renderDetails();
+
+    if (targetEvent) {
+      calendar.scrollIntoView({ block: "start" });
+    }
   }
 </script>
