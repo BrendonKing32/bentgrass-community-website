@@ -28,7 +28,7 @@ function isActive(href: string) {
 
 <header class="sticky top-0 z-50 border-b border-brand-200 bg-brand-50/95 backdrop-blur dark:border-brand-800 dark:bg-brand-950/95">
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-    <a href="/" class="flex items-center gap-2 font-display text-lg font-semibold text-brand-800">
+    <a href="/" class="flex items-center gap-2 font-display text-lg font-semibold text-brand-800 dark:text-brand-50">
       <span
         class="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-brand-50"
         aria-hidden="true"
@@ -60,25 +60,6 @@ function isActive(href: string) {
         <p data-search-hint class="mt-2 text-sm text-brand-500 dark:text-brand-400">Start typing to search the site…</p>
       </div>
     </details>
-
-    <button
-      type="button"
-      data-theme-toggle
-      class="flex cursor-pointer items-center justify-center rounded-md border border-brand-300 p-2 text-brand-700 dark:border-brand-700 dark:text-brand-200"
-      aria-label="Toggle dark mode"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 1020.354 15.354z" />
-      </svg>
-      <svg xmlns="http://www.w3.org/2000/svg" class="hidden h-5 w-5 dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <circle cx="12" cy="12" r="4" />
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.364 7.364l-1.414-1.414M6.05 6.05L4.636 4.636m12.728 0l-1.414 1.414M6.05 17.95l-1.414 1.414"
-        />
-      </svg>
-    </button>
 
     <details class="group relative lg:hidden">
       <summary
@@ -168,6 +149,18 @@ function isActive(href: string) {
         ))}
       </ul>
     </nav>
+
+    <button
+      type="button"
+      data-theme-toggle
+      class="flex cursor-pointer items-center justify-center rounded-md border border-brand-300 p-2 text-brand-700 dark:border-brand-700 dark:text-brand-200"
+      aria-label="Toggle dark mode"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" fill="none" />
+        <path d="M12 3a9 9 0 000 18z" fill="currentColor" stroke="none" />
+      </svg>
+    </button>
   </div>
 </header>
 
