@@ -34,7 +34,7 @@ const grouped = categories
           add it here.
         </p>
         <a
-          href="mailto:bentgrassneighborhood@gmail.com?subject=Community%20Gallery%20photo"
+          href="/community-gallery/submit"
           class="mt-6 inline-flex items-center justify-center rounded-full bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-800"
         >
           Submit a photo
@@ -42,6 +42,10 @@ const grouped = categories
         <p class="mx-auto mt-4 max-w-md text-xs text-brand-500 dark:text-brand-400">
           Please share original photos only, and be mindful of privacy for anyone identifiable in the shot.
         </p>
+      </div>
+      <div id="resident-submissions" class="mt-10 hidden">
+        <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">Resident submissions</h2>
+        <div id="resident-submission-grid" class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3"></div>
       </div>
     ) : (
       <div class="flex flex-col gap-10">
@@ -65,13 +69,51 @@ const grouped = categories
             </div>
           </div>
         ))}
+        <div id="resident-submissions" class="hidden">
+          <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">Resident submissions</h2>
+          <div id="resident-submission-grid" class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3"></div>
+        </div>
         <div class="rounded-2xl border border-dashed border-brand-300 bg-white p-6 text-center dark:border-brand-700 dark:bg-brand-900">
           <p class="text-brand-700 dark:text-brand-200">Have a photo to add?</p>
-          <a href="mailto:bentgrassneighborhood@gmail.com?subject=Community%20Gallery%20photo" class="font-semibold text-brand-800 hover:text-brand-900 dark:text-brand-100 dark:hover:text-white">
-            Send it our way &rarr;
+          <a href="/community-gallery/submit" class="font-semibold text-brand-800 hover:text-brand-900 dark:text-brand-100 dark:hover:text-white">
+            Submit it for private screening &rarr;
           </a>
         </div>
       </div>
     )}
   </section>
 </BaseLayout>
+
+<script>
+  interface PublishedPhoto {
+    id: string;
+    title: string;
+    category: string;
+    credit: string | null;
+  }
+
+  const submissions = document.querySelector<HTMLElement>("#resident-submissions");
+  const grid = document.querySelector<HTMLElement>("#resident-submission-grid");
+
+  fetch("/api/photo/public")
+    .then((response) => (response.ok ? response.json() : { photos: [] }))
+    .then(({ photos }: { photos: PublishedPhoto[] }) => {
+      if (!photos.length || !submissions || !grid) return;
+      photos.forEach((photo) => {
+        const figure = document.createElement("figure");
+        figure.className = "overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-sm dark:border-brand-800 dark:bg-brand-900";
+        const image = document.createElement("img");
+        image.src = `/api/photo/image/${encodeURIComponent(photo.id)}`;
+        image.alt = photo.title;
+        image.loading = "lazy";
+        image.className = "aspect-square w-full object-cover";
+        const caption = document.createElement("figcaption");
+        caption.className = "p-3 text-sm text-brand-700 dark:text-brand-200";
+        caption.textContent = photo.credit ? `${photo.title} — ${photo.credit}` : photo.title;
+        figure.append(image, caption);
+        grid.append(figure);
+      });
+      submissions.classList.remove("hidden");
+    })
+    .catch(() => {});
+</script>

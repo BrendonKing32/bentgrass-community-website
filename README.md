@@ -23,7 +23,7 @@ public/
   admin/           Sveltia CMS admin UI (config.yml + index.html)
 functions/api/     GitHub OAuth handlers + the newsletter signup endpoint, written as Pages
                    Functions and compiled into the Worker at build time
-migrations/        D1 migrations for the private resident directory and compiled into the Worker at build time
+migrations/        D1 migrations for private residents and moderated photo submissions
 ```
 
 Every page except the home page and the "district info" pages (WHMD/BGMD) is generated from a **content collection** — adding, editing, or removing a markdown file in `src/content/` is enough to change what's on the site. No code changes needed for routine updates.
@@ -129,3 +129,13 @@ Content editors and other collaborators still need to be added to this repo (Set
 - **Events** are automatically sorted into "Upcoming" and "Past" based on the event's `date` (or `endDate`, for multi-day events) compared to the time of the most recent build. Since this is a static site, "today" only updates when the site rebuilds — pushing any commit (or editing content through `/admin`) triggers a rebuild.
 - **Gallery** starts empty with a "submit a photo" call to action. Add photos either via `/admin` (uploads go to `public/images/uploads/`) or by adding files directly and committing.
 - The **FAQ** and **General Resources** pages are grouped by a `category` field — see `src/content.config.ts` for the fixed set of category values each collection accepts.
+
+## Moderated photo submissions
+
+Verified residents can submit photos at `/community-gallery/submit`. Submissions are accepted only through the authenticated Worker endpoint, have EXIF metadata stripped, and are stored in the private `PHOTO_QUARANTINE` R2 bucket. The image safety adapter calls `IMAGE_SAFETY_API_URL` with `IMAGE_SAFETY_API_TOKEN` and requires a provider response that explicitly supports illegal-content/CSAM handling. Missing configuration, provider errors, and uncertain results fail closed into specialist review.
+
+High-risk results are never stored in the local quarantine bucket and are not shown to administrators. The external provider and the designated security/legal contact must handle escalation according to the provider's trust-and-safety and legal process. Community administrators can only preview explicitly cleared images and publish or reject safe queue items through `/api/photo/admin`.
+
+Production setup requires two private R2 buckets (`bentgrass-photo-quarantine` and `bentgrass-photo-public`), the `0002_photo_submissions.sql` migration, `IMAGE_SAFETY_API_URL`, `IMAGE_SAFETY_API_TOKEN`, and `PHOTO_ADMIN_GITHUB_LOGINS`. Do not configure a generic image classifier as the only CSAM control; select a service with documented hash matching, escalation, retention, and reporting responsibilities before enabling submissions.
+
+The safety endpoint is intentionally provider-neutral. It receives `{ "content_type": "...", "image_base64": "...", "require_csam_workflow": true }` and must return a JSON verdict of `clear`, `high_risk`, `rejected`, or `specialist_review`, plus an optional provider reference. The adapter fails closed for missing configuration, errors, unsupported responses, and timeouts. A practical provider evaluation should start with PhotoDNA Cloud for known-CSAM hash matching and a separate specialist image-safety service for broader illegal/inappropriate content; confirm eligibility, reporting duties, retention, and legal terms with each provider before onboarding.

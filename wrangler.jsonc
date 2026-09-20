@@ -7,6 +7,16 @@
     "directory": "./dist",
     "binding": "ASSETS"
   },
+  "r2_buckets": [
+    {
+      "binding": "PHOTO_QUARANTINE",
+      "bucket_name": "bentgrass-photo-quarantine"
+    },
+    {
+      "binding": "PHOTO_PUBLIC",
+      "bucket_name": "bentgrass-photo-public"
+    }
+  },
   "d1_databases": [
     {
       "binding": "RESIDENT_DB",

@@ -1,0 +1,38 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+---
+
+<BaseLayout title="Submit a Photo" description="Submit a photo to the private moderation queue for the Bent Grass community gallery." privatePage>
+  <PageHeader eyebrow="Verified residents" title="Submit a photo" description="Your photo is screened privately before it can be considered for the public gallery." />
+  <section class="mx-auto max-w-2xl px-4 py-12 sm:px-6">
+    <form id="photo-form" class="space-y-5 rounded-2xl border border-brand-200 bg-white p-6 shadow-sm dark:border-brand-800 dark:bg-brand-900">
+      <label class="block text-sm font-semibold">Photo<input name="photo" type="file" accept="image/jpeg,image/png,image/webp" required class="mt-1 block w-full text-sm" /></label>
+      <label class="block text-sm font-semibold">Title<input name="title" required maxlength="120" class="mt-1 w-full rounded-md border border-brand-300 px-3 py-2 dark:border-brand-700 dark:bg-brand-950" /></label>
+      <label class="block text-sm font-semibold">Category<select name="category" required class="mt-1 w-full rounded-md border border-brand-300 px-3 py-2 dark:border-brand-700 dark:bg-brand-950"><option value="">Choose one</option><option value="events">Local Events</option><option value="critters">Local Critters</option><option value="weather">Local Weather</option><option value="neighborhood">Neighborhood</option></select></label>
+      <label class="block text-sm font-semibold">Photo credit <span class="font-normal">(optional)</span><input name="credit" maxlength="120" class="mt-1 w-full rounded-md border border-brand-300 px-3 py-2 dark:border-brand-700 dark:bg-brand-950" /></label>
+      <div class="space-y-3 text-sm text-brand-700 dark:text-brand-200">
+        <label class="flex gap-2"><input name="confirmsRights" type="checkbox" required /> I took this photo or have permission to share it.</label>
+        <label class="flex gap-2"><input name="confirmsPrivacy" type="checkbox" required /> Recognizable people have given permission, and this image contains no sensitive personal information.</label>
+        <label class="flex gap-2"><input name="noRecognizableMinors" type="checkbox" required /> This image does not contain recognizable minors.</label>
+      </div>
+      <p class="text-sm text-brand-600 dark:text-brand-300">Images are stripped of embedded metadata and screened by an external safety service. Submissions that need specialist review are not shown to community administrators.</p>
+      <button class="rounded-md bg-brand-700 px-4 py-2 font-semibold text-white hover:bg-brand-800" type="submit">Submit for screening</button>
+      <p id="message" class="text-sm" role="status"></p>
+    </form>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#photo-form");
+  const message = document.querySelector<HTMLElement>("#message");
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!form || !message) return;
+    message.textContent = "Uploading and screening privately…";
+    const response = await fetch("/api/photo/submit", { method: "POST", body: new FormData(form) });
+    const data = await response.json().catch(() => ({}));
+    message.textContent = response.ok ? "Your photo was submitted. You will not receive a preview while it is being screened." : data.error || "The photo could not be submitted.";
+    if (response.ok) form.reset();
+  });
+</script>
