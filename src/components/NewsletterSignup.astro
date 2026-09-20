@@ -8,7 +8,7 @@ const { variant = "dark" } = Astro.props;
 const dark = variant === "dark";
 ---
 
-<div class:list={["newsletter-signup", dark ? "text-brand-100" : "text-brand-700"]} data-variant={variant}>
+<div class:list={["newsletter-signup", dark ? "text-brand-100" : "text-brand-700 dark:text-brand-200"]} data-variant={variant}>
   <form method="POST" action="/api/subscribe" class="mx-auto flex max-w-md flex-col gap-3 sm:flex-row" data-newsletter-form>
     <label class="sr-only" for="newsletter-email">Email address</label>
     <input
@@ -48,9 +48,10 @@ const dark = variant === "dark";
   const status = params.get("subscribed");
   if (status && messages[status]) {
     const { text, tone } = messages[status];
+    const pageIsDark = document.documentElement.classList.contains("dark");
     document.querySelectorAll<HTMLParagraphElement>("[data-newsletter-message]").forEach((el) => {
       const wrapper = el.closest<HTMLElement>(".newsletter-signup");
-      const isDark = wrapper?.dataset.variant !== "light";
+      const isDark = wrapper?.dataset.variant !== "light" || pageIsDark;
       el.textContent = text;
       el.hidden = false;
       el.classList.remove("text-accent-200", "text-red-300", "text-brand-700", "text-red-600");

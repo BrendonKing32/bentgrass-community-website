@@ -17,6 +17,13 @@ const pageTitle = title === "Bent Grass Neighborhood" ? title : `${title} · Ben
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script is:inline>
+      (function () {
+        var stored = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.classList.toggle("dark", stored ? stored === "dark" : prefersDark);
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="description" content={description} />
     <title>{pageTitle}</title>
@@ -42,7 +49,7 @@ const pageTitle = title === "Bent Grass Neighborhood" ? title : `${title} · Ben
       })(window, document, "clarity", "script", "yd9zccmh2o");
     </script>
   </head>
-  <body class="flex min-h-screen flex-col font-sans text-brand-950 antialiased">
+  <body class="flex min-h-screen flex-col bg-brand-50 font-sans text-brand-950 antialiased dark:bg-brand-950 dark:text-brand-50">
     <a
       href="#main-content"
       class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-brand-700 focus:px-4 focus:py-2 focus:text-white"

@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Fraunces", ui-serif, Georgia, serif;
@@ -14,8 +16,8 @@
   --color-brand-600: #467234;
   --color-brand-700: #38592b;
   --color-brand-800: #2f4826;
-  --color-brand-900: #283c22;
-  --color-brand-950: #142010;
+  --color-brand-900: #314d2a;
+  --color-brand-950: #1d3018;
 
   --color-accent-50: #fdf6ec;
   --color-accent-100: #faeaca;
@@ -33,12 +35,31 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
-  background-color: var(--color-brand-50);
-}
-
 .prose :where(a):not(:where([class~="not-prose"] *)) {
   color: var(--color-brand-700);
   font-weight: 600;
   text-underline-offset: 2px;
+}
+
+.dark .prose :where(a):not(:where([class~="not-prose"] *)) {
+  color: var(--color-accent-300);
+}
+
+.dark .prose {
+  --tw-prose-body: var(--color-brand-100);
+  --tw-prose-headings: var(--color-brand-50);
+  --tw-prose-lead: var(--color-brand-200);
+  --tw-prose-bold: var(--color-brand-50);
+  --tw-prose-counters: var(--color-brand-300);
+  --tw-prose-bullets: var(--color-brand-600);
+  --tw-prose-hr: var(--color-brand-800);
+  --tw-prose-quotes: var(--color-brand-50);
+  --tw-prose-quote-borders: var(--color-brand-700);
+  --tw-prose-captions: var(--color-brand-300);
+  --tw-prose-kbd: var(--color-brand-50);
+  --tw-prose-code: var(--color-accent-300);
+  --tw-prose-pre-code: var(--color-brand-100);
+  --tw-prose-pre-bg: var(--color-brand-950);
+  --tw-prose-th-borders: var(--color-brand-700);
+  --tw-prose-td-borders: var(--color-brand-800);
 }
