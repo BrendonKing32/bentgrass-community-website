@@ -30,6 +30,15 @@ Tailwind v4 theme lives in the `@theme` block of [src/styles/global.css](src/sty
 
 These are Cloudflare Pages Functions (`onRequestGet`/`onRequestPost` exports), not Node/Express handlers. See the `cloudflare-pages-functions` skill for the handler pattern, and README "Setting up the content admin" / "Newsletter" for the required secrets.
 
+## Resident directory & photo moderation auth
+
+Two independent auth schemes live under `functions/api/`, both backed by the `RESIDENT_DB` D1 binding:
+
+- **Resident session** (`functions/api/resident/_shared.js`): a resident who authenticates via magic link gets an HttpOnly `bentgrass_resident_session` cookie whose SHA-256 hash is looked up in the `resident_sessions` table (joined to `residents`, requiring `status = 'approved'`). `requireResident(request, env)` is the guard every resident-only endpoint calls first — see its use in [functions/api/photo/submit.js](functions/api/photo/submit.js). `functions/api/photo/_shared.js` re-exports it rather than duplicating it.
+- **GitHub-login admin allowlist**: `functions/api/resident/admin.js` and `functions/api/photo/admin.js` each have their own local `adminUser()` that takes a `Bearer` token, calls `https://api.github.com/user`, and checks the login against `RESIDENT_ADMIN_GITHUB_LOGINS` / `PHOTO_ADMIN_GITHUB_LOGINS` respectively. This is copy-pasted per file, not shared — keep both in sync if the pattern changes.
+
+Photo submissions additionally fail closed through `screenImage()`/`failClosed()` in `functions/api/photo/_shared.js`: any missing config, non-OK response, or thrown error from `IMAGE_SAFETY_API_URL` resolves to `specialist_review`, and only an explicit `clear`-family verdict reaches `cleared`. Images are stripped of EXIF (`stripMetadata`) before they're screened or stored, and `high_risk` verdicts are never written to `PHOTO_QUARANTINE` at all. See README "Moderated photo submissions" for the operational/legal requirements this enforces.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build
