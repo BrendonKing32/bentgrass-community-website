@@ -6,6 +6,14 @@
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "RESIDENT_DB",
+      "database_name": "bentgrass-residents",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
   }
   // Once the domain's zone is active on Cloudflare (see README "Deployment"),
   // either add a Custom Domain via the dashboard, or uncomment:

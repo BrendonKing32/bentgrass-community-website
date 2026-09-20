@@ -6,9 +6,14 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description?: string;
+  privatePage?: boolean;
 }
 
-const { title, description = "A volunteer-led community resource for the Bent Grass neighborhood in Falcon, Colorado." } = Astro.props;
+const {
+  title,
+  description = "A volunteer-led community resource for the Bent Grass neighborhood in Falcon, Colorado.",
+  privatePage = false,
+} = Astro.props;
 const pageTitle = title === "Bent Grass Neighborhood" ? title : `${title} · Bent Grass Neighborhood`;
 ---
 
@@ -26,6 +31,7 @@ const pageTitle = title === "Bent Grass Neighborhood" ? title : `${title} · Ben
     </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="description" content={description} />
+    {privatePage && <meta name="robots" content="noindex, nofollow, noarchive" />}
     <title>{pageTitle}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

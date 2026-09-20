@@ -23,6 +23,7 @@ public/
   admin/           Sveltia CMS admin UI (config.yml + index.html)
 functions/api/     GitHub OAuth handlers + the newsletter signup endpoint, written as Pages
                    Functions and compiled into the Worker at build time
+migrations/        D1 migrations for the private resident directory and compiled into the Worker at build time
 ```
 
 Every page except the home page and the "district info" pages (WHMD/BGMD) is generated from a **content collection** — adding, editing, or removing a markdown file in `src/content/` is enough to change what's on the site. No code changes needed for routine updates.
@@ -98,6 +99,22 @@ The "Subscribe to the newsletter" form on the home page and the Monthly Newslett
 - **Spam protection:** the signup form has a hidden honeypot field; bots that fill it in get a fake "success" redirect without ever calling Buttondown.
 - **Local development:** add `BUTTONDOWN_API_KEY=<your key>` to `.dev.vars` so `npm run preview` (`wrangler dev`) can exercise the signup endpoint locally.
 - **Sending issues / managing subscribers:** done entirely in the [Buttondown dashboard](https://buttondown.com/) — compose and send there, and it handles unsubscribes automatically.
+
+## Private resident directory
+
+The resident directory at `/resident-directory` is not a public content collection. It uses the `RESIDENT_DB` Cloudflare D1 binding, server-side session cookies, and one-time email magic links. Applicants submit their name, community address, email, and optional phone/miscellaneous information for manual administrator review. Owners and current renters are eligible.
+
+Directory records are never included in Astro's static output or public search index. Address is used for verification and is not displayed. Email and phone visibility are off by default and can be independently enabled or hidden by the resident.
+
+Before deploying this feature:
+
+1. Create a D1 database and replace `REPLACE_WITH_D1_DATABASE_ID` in `wrangler.jsonc`.
+2. Apply migrations with `npx wrangler d1 migrations apply bentgrass-residents --remote`.
+3. Configure `RESEND_API_KEY` and `RESIDENT_EMAIL_FROM` for magic-link delivery. The provider adapter currently targets Resend; no sign-in link is sent until both values are configured.
+4. Configure `RESIDENT_ADMIN_GITHUB_LOGINS` as a comma-separated list of GitHub usernames allowed to review applications through `/api/resident/admin`. Administrators can use the GitHub token from the CMS session as a bearer token; board oversight should be reflected in this allowlist.
+5. Set up the administrator review workflow: `GET /api/resident/admin` lists applications and `POST /api/resident/admin` accepts `applicationId`, `action` (`approve`, `reject`, or `revoke`), and an optional `note`. Do not publish resident data as markdown or expose the D1 binding to client code.
+
+For local preview, add the D1 binding and email values to Wrangler's local configuration, then use `npm run preview`; `npm run dev` does not execute the Worker endpoints.
 
 ## Bug reports
 
