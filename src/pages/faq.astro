@@ -26,6 +26,14 @@ const grouped = await Promise.all(
     return { category, items: withContent };
   })
 );
+
+const slug = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+const visibleGroups = grouped.filter((g) => g.items.length > 0);
 ---
 
 <BaseLayout title="FAQ" description="Answers to common questions about Bent Grass — districts, covenants, safety, and more.">
@@ -36,13 +44,50 @@ const grouped = await Promise.all(
   />
 
   <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <div class="mb-10 flex flex-col gap-6">
+      <div>
+        <label for="faq-filter" class="block text-sm font-semibold text-brand-800 dark:text-brand-100">Filter questions</label>
+        <input
+          id="faq-filter"
+          type="search"
+          autocomplete="off"
+          placeholder="Type a word like “fence”, “water”, or “HOA”…"
+          class="mt-2 w-full rounded-md border border-brand-300 bg-white px-3 py-2 text-brand-900 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 dark:border-brand-700 dark:bg-brand-950 dark:text-brand-50"
+        />
+        <p id="faq-filter-status" class="mt-2 min-h-5 text-sm text-brand-600 dark:text-brand-300" role="status" aria-live="polite"></p>
+        <p class="text-sm text-brand-500 dark:text-brand-400">
+          Looking for something beyond the FAQ? Use the search icon in the header to search the whole site.
+        </p>
+      </div>
+
+      <nav aria-label="FAQ categories">
+        <p class="text-sm font-semibold text-brand-800 dark:text-brand-100">Jump to a category</p>
+        <ul class="mt-2 flex flex-wrap gap-2">
+          {visibleGroups.map((group) => (
+            <li>
+              <a
+                href={`#${slug(group.category)}`}
+                class="inline-block rounded-full border border-brand-300 px-3 py-1.5 text-sm font-medium text-brand-800 hover:bg-brand-100 dark:border-brand-700 dark:text-brand-100 dark:hover:bg-brand-900"
+              >
+                {group.category}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+
+    <p id="faq-no-results" class="hidden rounded-xl border border-brand-200 bg-white p-5 text-brand-700 dark:border-brand-800 dark:bg-brand-900 dark:text-brand-200" hidden>
+      No questions match your filter. Try a different word, or clear the box to see everything.
+    </p>
+
     <div class="flex flex-col gap-10">
-      {grouped.map((group) => group.items.length > 0 && (
-        <div>
+      {visibleGroups.map((group) => (
+        <div data-faq-group id={slug(group.category)} class="scroll-mt-24">
           <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">{group.category}</h2>
           <div class="mt-4 flex flex-col gap-3">
             {group.items.map(({ item, Content }) => (
-              <details id={`faq-${item.id}`} class="group rounded-xl border border-brand-200 bg-white p-5 shadow-sm open:shadow-md dark:border-brand-800 dark:bg-brand-900">
+              <details data-faq-item id={`faq-${item.id}`} class="group rounded-xl border border-brand-200 bg-white p-5 shadow-sm open:shadow-md dark:border-brand-800 dark:bg-brand-900">
                 <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-brand-800 [&::-webkit-details-marker]:hidden dark:text-brand-100">
                   {item.data.question}
                   <svg
@@ -77,4 +122,31 @@ const grouped = await Promise.all(
       target.scrollIntoView({ block: "start" });
     }
   }
+
+  const input = document.getElementById("faq-filter") as HTMLInputElement | null;
+  const status = document.getElementById("faq-filter-status");
+  const noResults = document.getElementById("faq-no-results");
+  const items = Array.from(document.querySelectorAll<HTMLDetailsElement>("[data-faq-item]"));
+  const groups = Array.from(document.querySelectorAll<HTMLElement>("[data-faq-group]"));
+  const haystacks = items.map((item) => (item.textContent ?? "").toLowerCase());
+
+  function applyFilter() {
+    if (!input || !status || !noResults) return;
+    const terms = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+    let shown = 0;
+    items.forEach((item, i) => {
+      const match = terms.every((term) => haystacks[i].includes(term));
+      item.hidden = !match;
+      if (match) shown++;
+    });
+    groups.forEach((group) => {
+      group.hidden = !group.querySelector("[data-faq-item]:not([hidden])");
+    });
+    const filtering = terms.length > 0;
+    noResults.hidden = !(filtering && shown === 0);
+    noResults.classList.toggle("hidden", noResults.hidden);
+    status.textContent = filtering ? `Showing ${shown} of ${items.length} questions` : "";
+  }
+
+  input?.addEventListener("input", applyFilter);
 </script>
