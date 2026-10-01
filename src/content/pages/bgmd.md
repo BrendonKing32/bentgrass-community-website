@@ -1,5 +1,5 @@
 ---
-title: "BGMD Information"
+title: "Bent Grass District: covenants & ARC (BGMD)"
 ---
 
 The **Bent Grass Metropolitan District** serves as local governance for the neighborhood, established in 2007 and approved by El Paso County. It's a metropolitan district — a local government entity responsible for building and maintaining neighborhood infrastructure while managing associated debt.
