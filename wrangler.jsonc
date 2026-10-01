@@ -5,7 +5,8 @@
   "main": "./dist/_worker.js",
   "assets": {
     "directory": "./dist",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    "not_found_handling": "404-page"
   }
   // Once the domain's zone is active on Cloudflare (see README "Deployment"),
   // either add a Custom Domain via the dashboard, or uncomment:

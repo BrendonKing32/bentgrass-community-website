@@ -38,7 +38,7 @@ function isActive(href: string) {
       Bent Grass Neighborhood
     </a>
 
-    <details class="group relative">
+    <details id="site-search" class="group relative">
       <summary
         class="flex cursor-pointer list-none items-center justify-center rounded-md border border-brand-300 p-2 text-brand-700 [&::-webkit-details-marker]:hidden dark:border-brand-700 dark:text-brand-200"
         aria-label="Search the site"
@@ -211,6 +211,11 @@ function isActive(href: string) {
   if (details && input && resultsEl && emptyEl && hintEl) {
     let index: SearchRecord[] | null = null;
     let loadPromise: Promise<void> | null = null;
+
+    if (location.hash === "#site-search") {
+      details.open = true;
+      input.focus();
+    }
 
     function loadIndex(): Promise<void> {
       if (loadPromise) return loadPromise;
