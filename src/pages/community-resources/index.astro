@@ -1,0 +1,51 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+
+const cards = [
+  {
+    title: "General Resources",
+    description: "Helpful links, forms, and contacts for everyday neighborhood needs.",
+    href: "/community-resources/general-resources",
+  },
+  {
+    title: "Woodmen Hills: water & parks (WHMD)",
+    description: "The metro district that runs our water and sewer service and the larger parks and recreation facilities.",
+    href: "/community-resources/whmd-information",
+  },
+  {
+    title: "Bent Grass District: covenants & ARC (BGMD)",
+    description: "Our local district for neighborhood infrastructure, covenants, and architectural requests.",
+    href: "/community-resources/bgmd-information",
+  },
+  {
+    title: "Monthly Newsletters",
+    description: "Catch up on local events, board updates, and seasonal information.",
+    href: "/community-resources/monthly-newsletters",
+  },
+];
+---
+
+<BaseLayout title="Community Resources" description="Guides to the districts, resources, and newsletters that serve the Bent Grass neighborhood.">
+  <PageHeader
+    eyebrow="Community Resources"
+    title="Community Resources"
+    description="Not sure who to ask? Start here to find the right district, resource, or newsletter."
+  />
+
+  <section class="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+    <ul class="grid gap-4 sm:grid-cols-2">
+      {cards.map((card) => (
+        <li>
+          <a
+            href={card.href}
+            class="block h-full rounded-2xl border border-brand-200 bg-white p-6 shadow-sm transition hover:border-brand-400 hover:shadow-md dark:border-brand-800 dark:bg-brand-900 dark:hover:border-brand-600"
+          >
+            <h2 class="font-display text-xl font-semibold text-brand-900 dark:text-brand-50">{card.title}</h2>
+            <p class="mt-2 text-brand-700 dark:text-brand-200">{card.description}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

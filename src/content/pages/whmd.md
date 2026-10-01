@@ -1,5 +1,5 @@
 ---
-title: "WHMD Information"
+title: "Woodmen Hills: water & parks (WHMD)"
 ---
 
 The **Woodmen Hills Metropolitan District (WHMD)** is a separate, overlapping entity. WHMD owns and operates the water and wastewater (sewer) systems that serve our homes, plus the larger Woodmen Hills parks and recreation facilities.
