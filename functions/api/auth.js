@@ -17,7 +17,7 @@ export async function onRequestGet(context) {
   const authorizeUrl = new URL("https://github.com/login/oauth/authorize");
   authorizeUrl.searchParams.set("client_id", env.GITHUB_OAUTH_CLIENT_ID);
   authorizeUrl.searchParams.set("redirect_uri", redirectUri);
-  authorizeUrl.searchParams.set("scope", "repo,user");
+  authorizeUrl.searchParams.set("scope", "public_repo");
   authorizeUrl.searchParams.set("state", state);
 
   const headers = new Headers({ Location: authorizeUrl.toString() });
