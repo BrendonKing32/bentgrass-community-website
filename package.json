@@ -21,12 +21,12 @@
   },
   "allowScripts": {
     "esbuild": true,
-    "workerd@1.20260831.1": true,
+    "workerd@1.20261001.1": true,
     "fsevents@2.3.3": true
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "typescript": "^6.0.3",
-    "wrangler": "^4.128.0"
+    "wrangler": "^4.146.0"
   }
 }
