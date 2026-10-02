@@ -1,5 +1,6 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
 
 const news = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/news' }),
@@ -22,7 +23,7 @@ const events = defineCollection({
       endDate: z.coerce.date().optional(),
       time: z.string().optional(),
       location: z.string().optional(),
-      link: z.string().url().optional(),
+      link: z.url().optional(),
       linkLabel: z.string().optional(),
       coverImage: image().optional(),
       coverImageAlt: z.string().optional(),
@@ -34,7 +35,7 @@ const newsletters = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
-    url: z.string().url().optional(),
+    url: z.url().optional(),
   }),
 });
 
@@ -51,7 +52,7 @@ const resources = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/resources' }),
   schema: z.object({
     title: z.string(),
-    url: z.string().url(),
+    url: z.url(),
     category: z.enum(['emergency-weather', 'safety', 'local-government', 'community-social']),
     order: z.number().default(0),
   }),
