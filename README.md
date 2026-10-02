@@ -78,7 +78,7 @@ The Homepage/callback URLs below, and `base_url` in `public/admin/config.yml`, m
    npx wrangler secret put GITHUB_OAUTH_CLIENT_ID
    npx wrangler secret put GITHUB_OAUTH_CLIENT_SECRET
    ```
-4. Secrets set via the dashboard trigger a redeploy automatically; via Wrangler, `secret put` deploys immediately. Anyone with **write access to the GitHub repo** can now sign in at `/admin` and edit content. (Sveltia's GitHub backend authorizes based on repo permissions — there's no separate user list to manage.)
+4. Secrets set via the dashboard trigger a redeploy automatically; via Wrangler, `secret put` deploys immediately. Because this repository is public, the OAuth flow requests only the `public_repo` scope instead of access to all of an editor's repositories; it does not request the `user` scope. Anyone with **write access to the GitHub repo** can sign in at `/admin` and edit content. (Sveltia's GitHub backend authorizes based on repo permissions — there's no separate user list to manage.)
 
 ### Switching to the custom domain
 
