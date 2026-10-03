@@ -6,10 +6,18 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description?: string;
+  socialImage?: string;
 }
 
-const { title, description = "A volunteer-led community resource for the Bent Grass neighborhood in Falcon, Colorado." } = Astro.props;
+const {
+  title,
+  description = "A volunteer-led community resource for the Bent Grass neighborhood in Falcon, Colorado.",
+  socialImage = "/social-card.jpg",
+} = Astro.props;
 const pageTitle = title === "Bent Grass Neighborhood" ? title : `${title} · Bent Grass Neighborhood`;
+const siteUrl = Astro.site ?? Astro.url.origin;
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
+const socialImageUrl = new URL(socialImage, siteUrl).href;
 ---
 
 <!doctype html>
@@ -32,6 +40,17 @@ const pageTitle = title === "Bent Grass Neighborhood" ? title : `${title} · Ben
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="description" content={description} />
     <title>{pageTitle}</title>
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Bent Grass Neighborhood" />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
     <meta name="generator" content={Astro.generator} />
     <script is:inline type="text/javascript">
       (function (c, l, a, r, i, t, y) {

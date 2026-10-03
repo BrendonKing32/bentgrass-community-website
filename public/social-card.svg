@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#172d14"/>
+      <stop offset="1" stop-color="#38592b"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c2d9a8"/>
+      <stop offset="1" stop-color="#80aa65"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#background)"/>
+  <circle cx="1030" cy="105" r="290" fill="#9fc385" opacity=".08"/>
+  <circle cx="1080" cy="590" r="245" fill="#9fc385" opacity=".07"/>
+  <path d="M756 474c8-153 93-249 253-269-11 152-94 247-253 269Z" fill="url(#leaf)"/>
+  <path d="M756 474c47-89 119-160 214-217" fill="none" stroke="#38592b" stroke-width="11" stroke-linecap="round"/>
+  <path d="M118 185h76" stroke="#9fc385" stroke-width="8" stroke-linecap="round"/>
+  <text x="118" y="279" fill="#fff" font-family="Georgia, 'Times New Roman', serif" font-size="82" font-weight="700">Bent Grass</text>
+  <text x="121" y="345" fill="#dbe8d0" font-family="Arial, Helvetica, sans-serif" font-size="32" letter-spacing="8">NEIGHBORHOOD</text>
+  <path d="M121 390h430" stroke="#9fc385" stroke-width="2" opacity=".7"/>
+  <text x="121" y="454" fill="#f2f5ed" font-family="Arial, Helvetica, sans-serif" font-size="30">A volunteer-led community resource</text>
+  <text x="121" y="502" fill="#c2d9a8" font-family="Arial, Helvetica, sans-serif" font-size="26">Falcon, Colorado</text>
+</svg>
