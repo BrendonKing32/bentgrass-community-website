@@ -18,7 +18,10 @@ export async function onRequestPost(context) {
   const redirectBase = (() => {
     const target = form.get("redirect");
     if (typeof target === "string" && target.startsWith("/")) {
-      return new URL(target, url.origin);
+      const candidate = new URL(target, url.origin);
+      if (candidate.origin === url.origin) {
+        return candidate;
+      }
     }
     return new URL("/community-resources/monthly-newsletters", url.origin);
   })();
