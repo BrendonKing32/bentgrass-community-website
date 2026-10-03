@@ -168,7 +168,11 @@ function isActive(href: string) {
   const themeToggle = document.querySelector<HTMLButtonElement>("[data-theme-toggle]");
   themeToggle?.addEventListener("click", () => {
     const isDark = document.documentElement.classList.toggle("dark");
-    localStorage.setItem("theme", isDark ? "dark" : "light");
+    try {
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    } catch {
+      // Keep the in-page toggle working when browser storage is unavailable.
+    }
   });
 </script>
 
