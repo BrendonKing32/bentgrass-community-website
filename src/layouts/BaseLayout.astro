@@ -19,7 +19,12 @@ const pageTitle = title === "Bent Grass Neighborhood" ? title : `${title} · Ben
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script is:inline>
       (function () {
-        var stored = localStorage.getItem("theme");
+        var stored;
+        try {
+          stored = localStorage.getItem("theme");
+        } catch {
+          // Use the system preference when browser storage is unavailable.
+        }
         var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         document.documentElement.classList.toggle("dark", stored ? stored === "dark" : prefersDark);
       })();
@@ -27,12 +32,6 @@ const pageTitle = title === "Bent Grass Neighborhood" ? title : `${title} · Ben
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="description" content={description} />
     <title>{pageTitle}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
     <meta name="generator" content={Astro.generator} />
     <script is:inline type="text/javascript">
       (function (c, l, a, r, i, t, y) {
