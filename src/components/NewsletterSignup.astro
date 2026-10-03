@@ -6,10 +6,12 @@ interface Props {
 
 const { variant = "dark" } = Astro.props;
 const dark = variant === "dark";
+// Public site key; defaults to Cloudflare's always-passes test key for local dev.
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
 ---
 
 <div class:list={["newsletter-signup", dark ? "text-brand-100" : "text-brand-700 dark:text-brand-200"]} data-variant={variant}>
-  <form method="POST" action="/api/subscribe" class="mx-auto flex max-w-md flex-col gap-3 sm:flex-row" data-newsletter-form>
+  <form method="POST" action="/api/subscribe" class="mx-auto flex max-w-md flex-col gap-3" data-newsletter-form>
     <label class="sr-only" for="newsletter-email">Email address</label>
     <input
       id="newsletter-email"
@@ -21,6 +23,7 @@ const dark = variant === "dark";
     />
     <!-- Honeypot field: hidden from real visitors, bots tend to fill every field in. -->
     <input type="text" name="company" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+    <div class="cf-turnstile" data-sitekey={siteKey} data-theme="auto" data-size="flexible"></div>
     <input type="hidden" name="redirect" value="" data-newsletter-redirect />
     <button
       type="submit"
@@ -31,6 +34,8 @@ const dark = variant === "dark";
   </form>
   <p class="mt-3 text-sm" data-newsletter-message hidden></p>
 </div>
+
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <script>
   document.querySelectorAll<HTMLInputElement>("[data-newsletter-redirect]").forEach((field) => {

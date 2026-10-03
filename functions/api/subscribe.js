@@ -1,6 +1,7 @@
 // Cloudflare Pages Function: handles newsletter signups by creating a
 // subscriber directly through Buttondown's API. Requires the
-// BUTTONDOWN_API_KEY secret (see README "Newsletter").
+// BUTTONDOWN_API_KEY secret (see README "Newsletter"). If TURNSTILE_SECRET_KEY
+// is set, a Cloudflare Turnstile token is verified before anything else.
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -30,6 +31,26 @@ export async function onRequestPost(context) {
   const honeypot = form.get("company");
   if (typeof honeypot === "string" && honeypot.trim() !== "") {
     return redirectTo(redirectBase, "success");
+  }
+
+  const token = form.get("cf-turnstile-response");
+  if (env.TURNSTILE_SECRET_KEY) {
+    const verification = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      {
+        method: "POST",
+        body: new URLSearchParams({
+          secret: env.TURNSTILE_SECRET_KEY,
+          response: typeof token === "string" ? token : "",
+          remoteip: request.headers.get("CF-Connecting-IP") || "",
+        }),
+      },
+    )
+      .then((r) => r.json())
+      .catch(() => null);
+    if (!verification?.success) {
+      return redirectTo(redirectBase, "blocked");
+    }
   }
 
   const email = String(form.get("email") || "")

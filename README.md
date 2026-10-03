@@ -96,6 +96,7 @@ The "Subscribe to the newsletter" form on the home page and the Monthly Newslett
 
 - **API key:** set the `BUTTONDOWN_API_KEY` secret with `npx wrangler secret put BUTTONDOWN_API_KEY` (a Buttondown API key, from your Buttondown account's API settings). Without it, the signup form redirects with an error.
 - **Spam protection:** the signup form has a hidden honeypot field; bots that fill it in get a fake "success" redirect without ever calling Buttondown.
+- **Bot protection (Turnstile):** the form includes a [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/) widget, verified server-side in `subscribe.js`. Create a widget in the Cloudflare dashboard (Turnstile), set `PUBLIC_TURNSTILE_SITE_KEY` as a build variable, and run `npx wrangler secret put TURNSTILE_SECRET_KEY`. Without the secret, verification is skipped. For crawlers site-wide, also enable **Bot Fight Mode** (Security → Bots) on the zone once the custom domain is active — it's a dashboard toggle, no code.
 - **Local development:** add `BUTTONDOWN_API_KEY=<your key>` to `.dev.vars` so `npm run preview` (`wrangler dev`) can exercise the signup endpoint locally.
 - **Sending issues / managing subscribers:** done entirely in the [Buttondown dashboard](https://buttondown.com/) — compose and send there, and it handles unsubscribes automatically.
 
