@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHeader from "../../components/PageHeader.astro";
+import ResourceNav from "../../components/ResourceNav.astro";
 import { getCollection, render } from "astro:content";
 
 const resources = await getCollection("resources");
@@ -28,9 +29,11 @@ const grouped = await Promise.all(
 <BaseLayout title="General Resources" description="Handy links for weather, safety, local government, and community.">
   <PageHeader
     eyebrow="Community Resources"
+    eyebrowHref="/community-resources"
     title="General Resources"
     description="A handful of links residents reach for most — emergency info, local government, and community spaces."
   />
+  <ResourceNav current="/community-resources/general-resources" />
 
   <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
     <div class="flex flex-col gap-10">
