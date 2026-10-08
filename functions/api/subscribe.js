@@ -90,7 +90,14 @@ export async function onRequestPost(context) {
     if (body?.code === "subscriber_blocked") {
       return redirectTo(redirectBase, "blocked");
     }
-    return redirectTo(redirectBase, "invalid");
+    // Only a rejected request body can mean the address itself is bad. Auth,
+    // rate-limit and server errors are on our side, so don't blame the
+    // visitor's email for them.
+    if (response.status === 400 || response.status === 422) {
+      return redirectTo(redirectBase, "invalid");
+    }
+    console.error(`Buttondown subscribe failed: ${response.status} ${body?.code ?? ""}`.trim());
+    return redirectTo(redirectBase, "error");
   }
 
   return redirectTo(redirectBase, "success");
