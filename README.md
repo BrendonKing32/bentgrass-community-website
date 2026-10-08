@@ -21,6 +21,7 @@ src/
   pages/           Routes — mostly thin wrappers that query content/ and render it
 public/
   admin/           Sveltia CMS admin UI (config.yml + index.html)
+  _headers         Response headers for all static assets (currently noindex)
 functions/api/     GitHub OAuth handlers + the newsletter signup endpoint, written as Pages
                    Functions and compiled into the Worker at build time
 ```
@@ -60,6 +61,8 @@ This site deploys as a **Worker with static assets** (Cloudflare's current recom
 3. Select **Save and Deploy**. Every push to `main` now triggers a **Workers Build** that rebuilds and redeploys automatically (Settings → Builds on the Worker if you need to change the branch later).
 4. Once your domain's DNS zone is active on Cloudflare, add the custom domain: Worker → **Settings → Domains & Routes → Add → Custom Domain**, enter `www.bentgrassneighborhood.org`. (You can also uncomment the `routes` block already sketched out in `wrangler.jsonc` and let a deploy create it instead.) Add a redirect rule from the bare domain to `www` under the zone's **Rules → Redirect Rules**.
 5. Keep the existing Google Sites site live until DNS has fully cut over and you've spot-checked the new site.
+
+**Search engine indexing is off.** `public/_headers` sends `X-Robots-Tag: noindex` on every page and file, so search engines won't list the site. `robots.txt` still allows crawling on purpose, because a crawler has to fetch a page to see the header. Delete that rule from `public/_headers` when the site should appear in search results.
 
 **Manual/one-off deploys** (no git push needed): `npm run build && npm run deploy` from your machine, using an authenticated `wrangler` (run `npx wrangler login` once).
 
