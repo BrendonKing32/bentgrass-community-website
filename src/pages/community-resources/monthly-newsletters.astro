@@ -8,7 +8,7 @@ import { getCollection } from "astro:content";
 const newsletters = (await getCollection("newsletters")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const byYear = newsletters.reduce<Record<string, typeof newsletters>>((acc, item) => {
-  const year = String(item.data.date.getFullYear());
+  const year = String(item.data.date.getUTCFullYear());
   acc[year] = acc[year] ? [...acc[year], item] : [item];
   return acc;
 }, {});
