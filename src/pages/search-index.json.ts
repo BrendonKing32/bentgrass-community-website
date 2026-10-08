@@ -4,7 +4,7 @@ import { getCollection } from "astro:content";
 export const prerender = true;
 
 interface SearchRecord {
-  type: "news" | "events" | "faq" | "resources" | "newsletters" | "gallery" | "pages";
+  type: "news" | "events" | "faq" | "resources" | "newsletters" | "gallery" | "pages" | "businesses";
   title: string;
   excerpt: string;
   url: string;
@@ -27,7 +27,7 @@ function truncate(text: string, max = 160): string {
 }
 
 export const GET: APIRoute = async () => {
-  const [news, events, faq, resources, newsletters, gallery, pages] = await Promise.all([
+  const [news, events, faq, resources, newsletters, gallery, pages, businesses] = await Promise.all([
     getCollection("news"),
     getCollection("events"),
     getCollection("faq"),
@@ -35,6 +35,7 @@ export const GET: APIRoute = async () => {
     getCollection("newsletters"),
     getCollection("gallery"),
     getCollection("pages"),
+    getCollection("businesses", (e) => e.data.listed),
   ]);
 
   const records: SearchRecord[] = [
@@ -85,6 +86,13 @@ export const GET: APIRoute = async () => {
       title: e.data.title,
       excerpt: "",
       url: e.id === "whmd" ? "/community-resources/whmd-information" : "/community-resources/bgmd-information",
+      date: null,
+    })),
+    ...businesses.map((e) => ({
+      type: "businesses" as const,
+      title: e.data.name,
+      excerpt: truncate(e.data.summary),
+      url: `/community-resources/business-directory#business-${e.id}`,
       date: null,
     })),
   ];
