@@ -2,9 +2,10 @@ backend:
   name: github
   repo: BrendonKing32/bentgrass-community-website
   branch: main
-  # TODO: switch to https://www.bentgrassneighborhood.org once the custom domain is wired up
-  # (must match wherever the OAuth App's callback URL points — see README).
-  base_url: https://bentgrass-community-website.brendonking-934.workers.dev
+  # Must be the origin the site is actually served from, and match the OAuth
+  # App's callback URL (see README). Switch to https://www.bentgrassneighborhood.org
+  # once that domain is wired up.
+  base_url: https://bentgrass.bkbuilds.dev
   auth_endpoint: api/auth
 
 publish_mode: simple
