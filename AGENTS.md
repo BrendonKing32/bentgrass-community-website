@@ -20,7 +20,7 @@ There is no test suite or linter configured (no `npm test`/`npm run lint`). Veri
 
 ## Content collections
 
-Collections and their schemas are defined in [src/content.config.ts](src/content.config.ts) — the single source of truth for required fields and the fixed `category` enums (`faq`, `resources`, `gallery`). Adding or editing a markdown file under `src/content/<collection>/` is enough for routine content changes; no code changes needed. See README "Content notes" for how events are sorted into Upcoming/Past.
+Collections and their schemas are defined in [src/content.config.ts](src/content.config.ts) — the single source of truth for required fields and the fixed `category` enums (`resources`, `gallery`, `businesses`; `faq` categories are a CMS select list only). Adding or editing a markdown file under `src/content/<collection>/` is enough for routine content changes; no code changes needed. See README "Content notes" for how events are sorted into Upcoming/Past.
 
 ## Styling conventions
 

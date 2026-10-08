@@ -1,0 +1,212 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import ResourceNav from "../../components/ResourceNav.astro";
+import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+
+const businesses = await getCollection("businesses", (entry) => entry.data.listed);
+
+const categories = [
+  { key: "home-services", label: "Home Services" },
+  { key: "food-drink", label: "Food & Drink" },
+  { key: "health-wellness", label: "Health & Wellness" },
+  { key: "childcare-education", label: "Childcare & Education" },
+  { key: "pets", label: "Pets" },
+  { key: "professional-services", label: "Professional Services" },
+  { key: "retail-crafts", label: "Retail & Crafts" },
+  { key: "other", label: "Other" },
+] as const;
+
+const grouped = (
+  await Promise.all(
+    categories.map(async (cat) => {
+      const items = businesses
+        .filter((b) => b.data.category === cat.key)
+        .sort((a, b) => a.data.name.localeCompare(b.data.name));
+      const withContent = await Promise.all(
+        items.map(async (item) => ({ item, Content: item.body?.trim() ? (await render(item)).Content : null }))
+      );
+      return { ...cat, items: withContent };
+    })
+  )
+).filter((g) => g.items.length > 0);
+
+const hasResidentOwned = businesses.some((b) => b.data.residentOwned);
+
+const submitHref = "mailto:bentgrassneighborhood@gmail.com?subject=Business%20Directory%20listing";
+
+const chipClass =
+  "inline-flex min-h-11 cursor-pointer items-center rounded-full border px-4 text-sm font-semibold border-brand-300 text-brand-700 hover:border-brand-500 aria-pressed:border-brand-700 aria-pressed:bg-brand-700 aria-pressed:text-white dark:border-brand-700 dark:text-brand-200 dark:aria-pressed:border-brand-200 dark:aria-pressed:bg-brand-200 dark:aria-pressed:text-brand-950";
+---
+
+<BaseLayout title="Business Directory" description="Local businesses and services run by and for the Bent Grass neighborhood.">
+  <PageHeader
+    eyebrow="Community Resources"
+    eyebrowHref="/community-resources"
+    title="Business Directory"
+    description="Local businesses and services that serve the neighborhood — many run by Bent Grass neighbors."
+  />
+  <ResourceNav current="/community-resources/business-directory" />
+
+  <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+    {grouped.length === 0 ? (
+      <div class="rounded-2xl border border-dashed border-brand-300 bg-white p-10 text-center dark:border-brand-700 dark:bg-brand-900">
+        <p class="font-display text-xl font-semibold text-brand-900 dark:text-brand-50">The directory is just getting started.</p>
+        <p class="mx-auto mt-2 max-w-md text-brand-600 dark:text-brand-300">
+          Run a business or offer a service in the area? Send us the details and we'll add you as one of the first listings.
+        </p>
+        <a
+          href={submitHref}
+          class="mt-6 inline-flex items-center justify-center rounded-full bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-800"
+        >
+          Request a listing
+        </a>
+      </div>
+    ) : (
+      <div class="flex flex-col gap-10">
+        <div data-directory-filters hidden class="flex flex-wrap items-center gap-2">
+          <button type="button" class={chipClass} data-filter-category="all" aria-pressed="true">All</button>
+          {grouped.map((group) => (
+            <button type="button" class={chipClass} data-filter-category={group.key} aria-pressed="false">{group.label}</button>
+          ))}
+          {hasResidentOwned && (
+            <button type="button" class={chipClass} data-filter-resident aria-pressed="false">Resident-owned only</button>
+          )}
+        </div>
+
+        {grouped.map((group) => (
+          <div data-directory-group={group.key}>
+            <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">{group.label}</h2>
+            <ul class="mt-4 grid gap-4 sm:grid-cols-2">
+              {group.items.map(({ item, Content }) => {
+                const { name, summary, url, phone, email, residentOwned, logo, logoAlt } = item.data;
+                return (
+                  <li
+                    id={`business-${item.id}`}
+                    data-business
+                    data-resident={residentOwned ? "true" : "false"}
+                    class="flex flex-col rounded-2xl border border-brand-200 bg-white p-5 shadow-sm dark:border-brand-800 dark:bg-brand-900"
+                  >
+                    <div class="flex items-start gap-4">
+                      {logo && (
+                        <Image
+                          src={logo}
+                          alt={logoAlt ?? `${name} logo`}
+                          width={128}
+                          height={128}
+                          class="h-16 w-16 flex-none rounded-xl border border-brand-100 bg-white object-contain p-1 dark:border-brand-800"
+                          loading="lazy"
+                        />
+                      )}
+                      <div class="min-w-0">
+                        <h3 class="font-display text-lg font-semibold text-brand-900 dark:text-brand-50">{name}</h3>
+                        {residentOwned && (
+                          <span class="mt-1 inline-block rounded-full bg-accent-100 px-3 py-0.5 text-xs font-semibold text-accent-800 dark:bg-accent-900 dark:text-accent-200">
+                            Resident-owned
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <p class="mt-3 text-brand-700 dark:text-brand-200">{summary}</p>
+                    {Content && (
+                      <div class="prose prose-sm mt-2 max-w-none text-brand-600 dark:text-brand-300">
+                        <Content />
+                      </div>
+                    )}
+                    {(url || phone || email) && (
+                      <ul class="mt-auto flex flex-wrap gap-x-4 pt-4 text-sm font-semibold">
+                        {url && (
+                          <li>
+                            <a href={url} target="_blank" rel="noopener" class="inline-flex min-h-11 items-center text-brand-800 underline decoration-brand-300 underline-offset-4 hover:text-brand-900 dark:text-brand-100 dark:decoration-brand-600 dark:hover:text-white">
+                              Website
+                            </a>
+                          </li>
+                        )}
+                        {phone && (
+                          <li>
+                            <a href={`tel:${phone.replace(/[^\d+]/g, "")}`} class="inline-flex min-h-11 items-center text-brand-800 underline decoration-brand-300 underline-offset-4 hover:text-brand-900 dark:text-brand-100 dark:decoration-brand-600 dark:hover:text-white">
+                              {phone}
+                            </a>
+                          </li>
+                        )}
+                        {email && (
+                          <li>
+                            <a href={`mailto:${email}`} class="inline-flex min-h-11 items-center break-all text-brand-800 underline decoration-brand-300 underline-offset-4 hover:text-brand-900 dark:text-brand-100 dark:decoration-brand-600 dark:hover:text-white">
+                              {email}
+                            </a>
+                          </li>
+                        )}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+
+        <p data-directory-empty hidden class="text-center text-brand-600 dark:text-brand-300">No businesses match those filters.</p>
+
+        <div class="rounded-2xl border border-dashed border-brand-300 bg-white p-6 text-center dark:border-brand-700 dark:bg-brand-900">
+          <p class="text-brand-700 dark:text-brand-200">Run a business or offer a service in the area?</p>
+          <a href={submitHref} class="font-semibold text-brand-800 hover:text-brand-900 dark:text-brand-100 dark:hover:text-white">
+            Ask to be listed &rarr;
+          </a>
+        </div>
+      </div>
+    )}
+
+    <p class="mt-8 text-center text-xs text-brand-700 dark:text-brand-400">
+      Listings are a neighbor service, not endorsements. See our{" "}
+      <a href="/site-info/neutrality-policy" class="underline underline-offset-2 hover:text-brand-900 dark:hover:text-white">Neutrality Policy</a>.
+    </p>
+  </section>
+</BaseLayout>
+
+<script>
+  const filters = document.querySelector<HTMLElement>("[data-directory-filters]");
+
+  if (filters) {
+    const categoryButtons = filters.querySelectorAll<HTMLButtonElement>("[data-filter-category]");
+    const residentButton = filters.querySelector<HTMLButtonElement>("[data-filter-resident]");
+    const groups = document.querySelectorAll<HTMLElement>("[data-directory-group]");
+    const emptyEl = document.querySelector<HTMLElement>("[data-directory-empty]");
+
+    let category = "all";
+    let residentOnly = false;
+
+    function apply() {
+      let visibleCount = 0;
+      groups.forEach((group) => {
+        const groupMatches = category === "all" || group.dataset.directoryGroup === category;
+        let groupVisible = 0;
+        group.querySelectorAll<HTMLElement>("[data-business]").forEach((card) => {
+          const show = groupMatches && (!residentOnly || card.dataset.resident === "true");
+          card.hidden = !show;
+          if (show) groupVisible++;
+        });
+        group.hidden = groupVisible === 0;
+        visibleCount += groupVisible;
+      });
+      if (emptyEl) emptyEl.hidden = visibleCount > 0;
+    }
+
+    categoryButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        category = button.dataset.filterCategory ?? "all";
+        categoryButtons.forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
+        apply();
+      });
+    });
+
+    residentButton?.addEventListener("click", () => {
+      residentOnly = !residentOnly;
+      residentButton.setAttribute("aria-pressed", String(residentOnly));
+      apply();
+    });
+
+    // Filters only work with JS, so they stay hidden until the script runs.
+    filters.hidden = false;
+  }
+</script>

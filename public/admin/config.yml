@@ -129,6 +129,43 @@ collections:
       - { label: "Date", name: "date", widget: "datetime", required: false }
       - { label: "Photo Credit", name: "credit", widget: "string", required: false }
 
+  - name: businesses
+    label: "Business Directory (pilot)"
+    folder: "src/content/businesses"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: name
+    summary: "{{name}}"
+    fields:
+      - { label: "Business Name", name: "name", widget: "string" }
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "Home Services", value: "home-services" }
+          - { label: "Food & Drink", value: "food-drink" }
+          - { label: "Health & Wellness", value: "health-wellness" }
+          - { label: "Childcare & Education", value: "childcare-education" }
+          - { label: "Pets", value: "pets" }
+          - { label: "Professional Services", value: "professional-services" }
+          - { label: "Retail & Crafts", value: "retail-crafts" }
+          - { label: "Other", value: "other" }
+      - { label: "Short Description", name: "summary", widget: "string", hint: "One sentence shown on the directory card." }
+      - { label: "Website or Social Link", name: "url", widget: "string", required: false, hint: "Full URL including https://" }
+      - { label: "Phone", name: "phone", widget: "string", required: false, hint: "e.g. (719) 555-0123" }
+      - { label: "Email", name: "email", widget: "string", required: false }
+      - { label: "Resident-Owned", name: "residentOwned", widget: "boolean", default: false, hint: "Turn on if the business is run by a Bent Grass neighbor." }
+      - label: "Logo"
+        name: "logo"
+        widget: "image"
+        required: false
+        hint: "Optional. A small square logo works best."
+        media_folder: "../../assets/businesses"
+        public_folder: "../../assets/businesses"
+      - { label: "Logo Alt Text", name: "logoAlt", widget: "string", required: false }
+      - { label: "Show on Site", name: "listed", widget: "boolean", default: true, hint: "Turn off to hide this listing without deleting it." }
+      - { label: "More Details", name: "body", widget: "markdown", required: false }
+
   - name: pages
     label: "District Info Pages"
     folder: "src/content/pages"

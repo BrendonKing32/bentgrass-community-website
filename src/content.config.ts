@@ -77,4 +77,30 @@ const gallery = defineCollection({
     }),
 });
 
-export const collections = { news, events, newsletters, faq, resources, pages, gallery };
+const businesses = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/businesses' }),
+  schema: ({ image }) =>
+    z.object({
+      name: z.string(),
+      category: z.enum([
+        'home-services',
+        'food-drink',
+        'health-wellness',
+        'childcare-education',
+        'pets',
+        'professional-services',
+        'retail-crafts',
+        'other',
+      ]),
+      summary: z.string(),
+      url: z.url().optional(),
+      phone: z.string().optional(),
+      email: z.email().optional(),
+      residentOwned: z.boolean().default(false),
+      logo: image().optional(),
+      logoAlt: z.string().optional(),
+      listed: z.boolean().default(true),
+    }),
+});
+
+export const collections = { news, events, newsletters, faq, resources, pages, gallery, businesses };

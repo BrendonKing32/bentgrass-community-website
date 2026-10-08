@@ -16,6 +16,7 @@ src/
     resources/     General Resources links, grouped by category
     gallery/       Community Gallery photos
     pages/         Longer-form pages (WHMD Information, BGMD Information)
+    businesses/    Business Directory listings (pilot), grouped by category
   components/      Reusable Astro components (Header, Footer, cards, etc.)
   layouts/         Page shell (BaseLayout)
   pages/           Routes — mostly thin wrappers that query content/ and render it
@@ -44,7 +45,7 @@ This repo's `AGENTS.md` documents running `astro dev --background` for agent-dri
 
 **Option A — edit markdown directly.** Every collection in `src/content/` is a folder of `.md` files with frontmatter. Copy an existing file as a template, edit it, commit, and push — the connected Cloudflare Workers Build rebuilds and redeploys automatically.
 
-**Option B — use the content admin at `/admin`.** Once GitHub OAuth is configured (see below), anyone with access to the GitHub repo can go to `https://www.bentgrassneighborhood.org/admin`, log in with GitHub, and add/edit News, Events, Newsletters, FAQ, Resources, and Gallery photos through a form UI. Saving creates a commit directly on the `main` branch, which triggers a rebuild.
+**Option B — use the content admin at `/admin`.** Once GitHub OAuth is configured (see below), anyone with access to the GitHub repo can go to `https://www.bentgrassneighborhood.org/admin`, log in with GitHub, and add/edit News, Events, Newsletters, FAQ, Resources, Gallery photos, and Business Directory listings through a form UI. Saving creates a commit directly on the `main` branch, which triggers a rebuild.
 
 Step-by-step, per-collection guides (field references, examples, and common gotchas) live in the [repo wiki](https://github.com/BrendonKing32/bentgrass-community-website/wiki).
 
