@@ -7,11 +7,19 @@ import { getCollection } from "astro:content";
 
 const news = (await getCollection("news")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
 
-const now = new Date();
+// Compare calendar days in the neighborhood's timezone, so an event stays
+// "upcoming" through its own day. Front-matter dates are UTC midnight.
+const todayKey = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Denver" }).format(new Date());
+const endKey = (entry: { data: { date: Date; endDate?: Date } }) =>
+  (entry.data.endDate ?? entry.data.date).toISOString().slice(0, 10);
+
+// Render a few extra candidates; the script below hides ones that have ended
+// since the last build and shows the first three.
+const UPCOMING_LIMIT = 3;
 const upcomingEvents = (await getCollection("events"))
-  .filter((e) => (e.data.endDate ?? e.data.date) >= now)
+  .filter((e) => endKey(e) >= todayKey)
   .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf())
-  .slice(0, 3);
+  .slice(0, UPCOMING_LIMIT * 2);
 
 const quickLinks = [
   { label: "News & Announcements", href: "/news-announcements", icon: "📰" },
@@ -72,13 +80,17 @@ const quickLinks = [
   </section>
 
   {upcomingEvents.length > 0 && (
-    <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6" data-upcoming-section data-limit={UPCOMING_LIMIT}>
       <div class="flex items-baseline justify-between">
         <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">Upcoming Events</h2>
         <a href="/events-calendar" class="text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-brand-200 dark:hover:text-white">View all &rarr;</a>
       </div>
       <div class="mt-5 grid gap-5 md:grid-cols-3">
-        {upcomingEvents.map((event) => <EventCard entry={event} />)}
+        {upcomingEvents.map((event, index) => (
+          <div class:list={["grid", { hidden: index >= UPCOMING_LIMIT }]} data-upcoming-event data-end={endKey(event)}>
+            <EventCard entry={event} />
+          </div>
+        ))}
       </div>
     </section>
   )}
@@ -108,3 +120,20 @@ const quickLinks = [
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  // The list above is computed at build time; drop events that have ended
+  // since then so the homepage stays accurate between rebuilds.
+  const section = document.querySelector<HTMLElement>("[data-upcoming-section]");
+  if (section) {
+    const limit = Number(section.dataset.limit) || 3;
+    const todayKey = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Denver" }).format(new Date());
+    let shown = 0;
+    section.querySelectorAll<HTMLElement>("[data-upcoming-event]").forEach((item) => {
+      const visible = (item.dataset.end ?? "") >= todayKey && shown < limit;
+      item.classList.toggle("hidden", !visible);
+      if (visible) shown += 1;
+    });
+    if (shown === 0) section.hidden = true;
+  }
+</script>
