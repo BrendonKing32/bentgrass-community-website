@@ -35,13 +35,18 @@ export async function onRequestPost(context) {
 
   const token = form.get("cf-turnstile-response");
   if (env.TURNSTILE_SECRET_KEY) {
+    // No token means the visitor submitted before the widget finished (or
+    // with JavaScript off) — ask them to complete it rather than call it spam.
+    if (typeof token !== "string" || token === "") {
+      return redirectTo(redirectBase, "verify");
+    }
     const verification = await fetch(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",
       {
         method: "POST",
         body: new URLSearchParams({
           secret: env.TURNSTILE_SECRET_KEY,
-          response: typeof token === "string" ? token : "",
+          response: token,
           remoteip: request.headers.get("CF-Connecting-IP") || "",
         }),
       },

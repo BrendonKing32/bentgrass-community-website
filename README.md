@@ -100,7 +100,12 @@ The "Subscribe to the newsletter" form on the home page and the Monthly Newslett
 
 - **API key:** set the `BUTTONDOWN_API_KEY` secret with `npx wrangler secret put BUTTONDOWN_API_KEY` (a Buttondown API key, from your Buttondown account's API settings). Without it, the signup form redirects with an error.
 - **Spam protection:** the signup form has a hidden honeypot field; bots that fill it in get a fake "success" redirect without ever calling Buttondown.
-- **Bot protection (Turnstile):** the form includes a [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/) widget, verified server-side in `subscribe.js`. Create a widget in the Cloudflare dashboard (Turnstile), set `PUBLIC_TURNSTILE_SITE_KEY` as a build variable, and run `npx wrangler secret put TURNSTILE_SECRET_KEY`. Without the secret, verification is skipped. For crawlers site-wide, also enable **Bot Fight Mode** (Security → Bots) on the zone once the custom domain is active — it's a dashboard toggle, no code.
+- **Bot protection (Turnstile):** the form includes a [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/) widget, verified server-side in `subscribe.js`. To turn it on:
+  1. Cloudflare dashboard → **Turnstile** → **Add widget**. Hostnames: `bentgrassneighborhood.org` (covers `www.`) plus the Worker's `*.workers.dev` hostname. Widget mode: **Managed**.
+  2. Worker → **Settings → Builds → Variables and secrets**: add `PUBLIC_TURNSTILE_SITE_KEY` = the site key. This is a *build* variable (Astro bakes it into the HTML), not a runtime one — then retry the latest build so the widget appears.
+  3. `npx wrangler secret put TURNSTILE_SECRET_KEY` with the secret key (or Worker → Settings → Variables and Secrets → add as a Secret).
+
+  Do step 2 before step 3: with the secret set but no site key in the build, the form has no widget and every signup is rejected. Without the secret, verification is skipped. The always-passes test site key is used only by `npm run dev`. For crawlers site-wide, also enable **Bot Fight Mode** (Security → Bots) on the zone once the custom domain is active — it's a dashboard toggle, no code.
 - **Local development:** add `BUTTONDOWN_API_KEY=<your key>` to `.dev.vars` so `npm run preview` (`wrangler dev`) can exercise the signup endpoint locally.
 - **Sending issues / managing subscribers:** done entirely in the [Buttondown dashboard](https://buttondown.com/) — compose and send there, and it handles unsubscribes automatically.
 

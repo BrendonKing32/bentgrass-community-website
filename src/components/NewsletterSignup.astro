@@ -6,8 +6,13 @@ interface Props {
 
 const { variant = "dark" } = Astro.props;
 const dark = variant === "dark";
-// Public site key; defaults to Cloudflare's always-passes test key for local dev.
-const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
+// Public site key. Cloudflare's always-passes test key is only a fallback in
+// dev: its dummy token fails siteverify against a real secret, so shipping it
+// to production would block every signup. With no key in a production build,
+// the widget is left out (and the server skips the check unless
+// TURNSTILE_SECRET_KEY is set).
+const siteKey =
+  import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || (import.meta.env.DEV ? "1x00000000000000000000AA" : "");
 ---
 
 <div class:list={["newsletter-signup", dark ? "text-brand-100" : "text-brand-700 dark:text-brand-200"]} data-variant={variant}>
@@ -23,7 +28,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "1x0000000000000000
     />
     <!-- Honeypot field: hidden from real visitors, bots tend to fill every field in. -->
     <input type="text" name="company" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
-    <div class="cf-turnstile" data-sitekey={siteKey} data-theme="auto" data-size="flexible"></div>
+    {siteKey && <div class="cf-turnstile" data-sitekey={siteKey} data-theme="auto" data-size="flexible"></div>}
     <input type="hidden" name="redirect" value="" data-newsletter-redirect />
     <button
       type="submit"
@@ -35,7 +40,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "1x0000000000000000
   <p class="mt-3 text-sm" data-newsletter-message hidden></p>
 </div>
 
-<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{siteKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
 
 <script>
   document.querySelectorAll<HTMLInputElement>("[data-newsletter-redirect]").forEach((field) => {
@@ -46,12 +51,24 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "1x0000000000000000
     success: { text: "Almost there! Check your inbox for a confirmation email to complete your subscription.", tone: "success" },
     invalid: { text: "That doesn't look like a valid email address — mind trying again?", tone: "error" },
     error: { text: "Something went wrong on our end — mind trying again in a bit?", tone: "error" },
+    verify: { text: "Please finish the quick \"verify you're human\" check above the Subscribe button, then try again.", tone: "error" },
     blocked: { text: "We couldn't complete that signup — if this keeps happening, email us and we'll add you by hand.", tone: "error" },
   };
 
-  const params = new URLSearchParams(window.location.search);
-  const status = params.get("subscribed");
-  if (status && messages[status]) {
+  // Don't let a fast click submit before Turnstile has produced a token —
+  // that would come back as a confusing "couldn't complete" error.
+  document.querySelectorAll<HTMLFormElement>("[data-newsletter-form]").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      if (!form.querySelector(".cf-turnstile")) return;
+      const token = form.querySelector<HTMLInputElement>('input[name="cf-turnstile-response"]');
+      if (!token?.value) {
+        event.preventDefault();
+        showMessage("verify");
+      }
+    });
+  });
+
+  function showMessage(status: string) {
     const { text, tone } = messages[status];
     const pageIsDark = document.documentElement.classList.contains("dark");
     document.querySelectorAll<HTMLParagraphElement>("[data-newsletter-message]").forEach((el) => {
@@ -66,6 +83,12 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "1x0000000000000000
         el.classList.add(isDark ? "text-red-300" : "text-red-600");
       }
     });
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get("subscribed");
+  if (status && messages[status]) {
+    showMessage(status);
     params.delete("subscribed");
     const newSearch = params.toString();
     window.history.replaceState({}, "", window.location.pathname + (newSearch ? `?${newSearch}` : ""));
