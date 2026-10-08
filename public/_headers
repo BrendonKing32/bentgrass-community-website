@@ -1,0 +1,5 @@
+# Ask search engines not to index any page or file on the site.
+# robots.txt still allows crawling on purpose: a crawler has to fetch a page
+# to see this header. Remove this rule when the site should appear in search.
+/*
+  X-Robots-Tag: noindex
