@@ -6,7 +6,10 @@
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
-    "not_found_handling": "404-page"
+    "not_found_handling": "404-page",
+    // Browser navigations (e.g. the CMS login popup opening /api/auth) are
+    // otherwise served the 404 page without ever reaching the Worker.
+    "run_worker_first": ["/api/*"]
   }
   // Once the domain's zone is active on Cloudflare (see README "Deployment"),
   // either add a Custom Domain via the dashboard, or uncomment:

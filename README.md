@@ -71,7 +71,7 @@ This site deploys as a **Worker with static assets** (Cloudflare's current recom
 
 Sveltia CMS needs a GitHub OAuth App so it can commit on behalf of logged-in editors. This repo already includes the OAuth handlers (`functions/api/auth.js` and `functions/api/callback.js`), compiled into the Worker at build time — you just need to create the OAuth App and set two secrets on the Worker.
 
-The Homepage/callback URLs below, and `base_url` in `public/admin/config.yml`, must all point at whatever origin the site is actually reachable at **right now**. Until `www.bentgrassneighborhood.org` is wired up, that's `https://bentgrass.bkbuilds.dev` (the `*.workers.dev` URL no longer serves the Worker) — using the wrong one makes the login popup 404. Once the custom domain goes live, update both (see "Switching to the custom domain" below).
+The Homepage/callback URLs below, and `base_url` in `public/admin/config.yml`, must all point at whatever origin the site is actually reachable at **right now**. Until `www.bentgrassneighborhood.org` is wired up, that's `https://bentgrass.bkbuilds.dev` — the origin `/admin` is opened on — and using the wrong one breaks the login popup. Once the custom domain goes live, update both (see "Switching to the custom domain" below).
 
 1. In GitHub, go to **Settings → Developer settings → OAuth Apps → New OAuth App** (or create it under the organization/account that owns this repo).
    - **Homepage URL:** `https://bentgrass.bkbuilds.dev`
