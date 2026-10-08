@@ -21,13 +21,60 @@ const upcomingEvents = (await getCollection("events"))
   .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf())
   .slice(0, UPCOMING_LIMIT * 2);
 
-const quickLinks = [
-  { label: "News & Announcements", href: "/news-announcements", icon: "📰" },
-  { label: "Events & Calendar", href: "/events-calendar", icon: "📅" },
-  { label: "Community Resources", href: "/community-resources", icon: "🧭" },
-  { label: "FAQ", href: "/faq", icon: "❓" },
-  { label: "Community Gallery", href: "/community-gallery", icon: "📸" },
-  { label: "Contact / Get Involved", href: "/contact-get-involved", icon: "🤝" },
+// "Who do I contact?" rows. Every entry mirrors an answer already published in
+// src/content/faq or src/content/pages — keep them in sync if those change.
+const contactTopics = [
+  {
+    topic: "Water, sewer, or watering restrictions",
+    who: "Woodmen Hills Metro District (WHMD)",
+    href: "/community-resources/whmd-information",
+  },
+  {
+    topic: "Pocket parks, drainage, or entry monuments",
+    who: "Bent Grass Metro District (BGMD)",
+    href: "/community-resources/bgmd-information",
+  },
+  {
+    topic: "Fence, shed, deck, paint, or landscaping changes",
+    who: "BGMD Architectural Committee — approval comes first",
+    href: "/faq#faq-09-approval-before-changes",
+  },
+  {
+    topic: "A neighbor's yard or exterior",
+    who: "BGMD for covenant issues, El Paso County for code issues",
+    href: "/faq#faq-11-covenant-vs-county-violation",
+  },
+  {
+    topic: "Roads and streets",
+    who: "BGMD or El Paso County, depending on who owns the street",
+    href: "/faq#faq-21-road-improvements",
+  },
+  {
+    topic: "Safety, emergencies, or fire restrictions",
+    who: "911, the Sheriff's Office, or Falcon Fire Protection District",
+    href: "/faq#faq-22-safety-contact",
+  },
+  {
+    topic: "Problems with a new home",
+    who: "Challenger Homes warranty team",
+    href: "/faq#faq-19-home-warranty",
+  },
+  {
+    topic: "District board meetings",
+    who: "BGMD (1st Tuesday) and WHMD (4th Thursday)",
+    href: "/faq#faq-05-board-meetings",
+  },
+];
+
+const quickActions = [
+  {
+    label: "Submit an architectural request",
+    href: "https://bentgrassmd.colorado.gov",
+    external: true,
+  },
+  { label: "Find a board meeting", href: "/faq#faq-05-board-meetings" },
+  { label: "Join the Facebook group", href: "https://www.facebook.com/groups/bentgrassmeadows", external: true },
+  { label: "Get the newsletter", href: "#newsletter" },
 ];
 ---
 
@@ -62,21 +109,47 @@ const quickLinks = [
     </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-    <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">Quick Links</h2>
-    <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {quickLinks.map((link) => (
-        <a
-          href={link.href}
-          class="group flex items-center gap-4 rounded-2xl border border-brand-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-400 hover:shadow-md dark:border-brand-800 dark:bg-brand-900 dark:hover:border-brand-600"
-        >
-          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xl dark:bg-brand-800" aria-hidden="true">
-            {link.icon}
-          </span>
-          <span class="font-semibold text-brand-800 group-hover:text-brand-900 dark:text-brand-100 dark:group-hover:text-white">{link.label}</span>
-        </a>
+  <section class="mx-auto max-w-6xl px-4 py-6 sm:px-6" aria-labelledby="who-to-contact">
+    <h2 id="who-to-contact" class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">Who do I contact about…?</h2>
+    <p class="mt-2 text-brand-700 dark:text-brand-200">Pick your situation to see who handles it and the full answer.</p>
+    <ul class="mt-5 grid gap-3 md:grid-cols-2">
+      {contactTopics.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class="group flex h-full items-center justify-between gap-4 rounded-2xl border border-brand-200 bg-white p-4 shadow-sm transition hover:border-brand-400 hover:shadow-md dark:border-brand-800 dark:bg-brand-900 dark:hover:border-brand-600"
+          >
+            <span>
+              <span class="block font-semibold text-brand-900 dark:text-brand-50">{item.topic}</span>
+              <span class="mt-1 block text-sm text-brand-700 dark:text-brand-200">{item.who}</span>
+            </span>
+            <span class="shrink-0 text-brand-500 transition group-hover:translate-x-0.5 dark:text-brand-300" aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
       ))}
-    </div>
+    </ul>
+    <p class="mt-4 text-sm text-brand-700 dark:text-brand-200">
+      Not on the list? <a href="/faq" class="font-semibold underline hover:text-brand-900 dark:hover:text-white">Browse the full FAQ</a>
+      or <a href="/contact-get-involved" class="font-semibold underline hover:text-brand-900 dark:hover:text-white">reach out to us</a>.
+    </p>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-6 sm:px-6" aria-labelledby="common-tasks">
+    <h2 id="common-tasks" class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">Common tasks</h2>
+    <ul class="mt-4 flex flex-wrap gap-3">
+      {quickActions.map((action) => (
+        <li>
+          <a
+            href={action.href}
+            {...(action.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            class="inline-flex min-h-11 items-center rounded-full border border-brand-300 px-5 py-2 text-sm font-semibold text-brand-800 hover:bg-brand-100 dark:border-brand-700 dark:text-brand-100 dark:hover:bg-brand-900"
+          >
+            {action.label}
+            {action.external && <span class="sr-only"> (opens in a new tab)</span>}
+          </a>
+        </li>
+      ))}
+    </ul>
   </section>
 
   {upcomingEvents.length > 0 && (
@@ -107,7 +180,7 @@ const quickLinks = [
     </section>
   )}
 
-  <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+  <section id="newsletter" class="mx-auto max-w-6xl scroll-mt-24 px-4 py-10 sm:px-6">
     <div class="rounded-3xl bg-brand-700 px-6 py-10 text-center sm:px-12">
       <h2 class="font-display text-2xl font-semibold text-white">Stay in the loop</h2>
       <p class="mx-auto mt-3 max-w-xl text-brand-100">
