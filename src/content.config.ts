@@ -2,15 +2,20 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
+// Sveltia CMS saves cleared optional fields as '' — treat that as "not set"
+// so z.url()/z.email()/image() don't reject it.
+const optional = <T extends z.ZodType>(schema: T) =>
+  z.preprocess((value) => (value === '' ? undefined : value), schema.optional());
+
 const news = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/news' }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
       date: z.coerce.date(),
-      summary: z.string().optional(),
-      coverImage: image().optional(),
-      coverImageAlt: z.string().optional(),
+      summary: optional(z.string()),
+      coverImage: optional(image()),
+      coverImageAlt: optional(z.string()),
     }),
 });
 
@@ -20,13 +25,13 @@ const events = defineCollection({
     z.object({
       title: z.string(),
       date: z.coerce.date(),
-      endDate: z.coerce.date().optional(),
-      time: z.string().optional(),
-      location: z.string().optional(),
-      link: z.url().optional(),
-      linkLabel: z.string().optional(),
-      coverImage: image().optional(),
-      coverImageAlt: z.string().optional(),
+      endDate: optional(z.coerce.date()),
+      time: optional(z.string()),
+      location: optional(z.string()),
+      link: optional(z.url()),
+      linkLabel: optional(z.string()),
+      coverImage: optional(image()),
+      coverImageAlt: optional(z.string()),
     }),
 });
 
@@ -35,7 +40,7 @@ const newsletters = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
-    url: z.url().optional(),
+    url: optional(z.url()),
   }),
 });
 
@@ -72,8 +77,8 @@ const gallery = defineCollection({
       title: z.string(),
       image: image(),
       category: z.enum(['events', 'critters', 'weather', 'neighborhood']),
-      date: z.coerce.date().optional(),
-      credit: z.string().optional(),
+      date: optional(z.coerce.date()),
+      credit: optional(z.string()),
     }),
 });
 
@@ -93,12 +98,12 @@ const businesses = defineCollection({
         'other',
       ]),
       summary: z.string(),
-      url: z.url().optional(),
-      phone: z.string().optional(),
-      email: z.email().optional(),
+      url: optional(z.url()),
+      phone: optional(z.string()),
+      email: optional(z.email()),
       residentOwned: z.boolean().default(false),
-      logo: image().optional(),
-      logoAlt: z.string().optional(),
+      logo: optional(image()),
+      logoAlt: optional(z.string()),
       listed: z.boolean().default(true),
     }),
 });
