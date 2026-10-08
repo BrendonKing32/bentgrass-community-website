@@ -110,6 +110,6 @@ Content editors and other collaborators still need to be added to this repo (Set
 
 ## Content notes
 
-- **Events** are automatically sorted into "Upcoming" and "Past" based on the event's `date` (or `endDate`, for multi-day events) compared to the time of the most recent build. Since this is a static site, "today" only updates when the site rebuilds — pushing any commit (or editing content through `/admin`) triggers a rebuild.
+- **Events** on the homepage are considered "Upcoming" through their `date` (or `endDate`, for multi-day events) in the America/Denver calendar day. Since this is a static site, "today" only updates when the site rebuilds — pushing any commit (or editing content through `/admin`) triggers a rebuild.
 - The **Gallery** currently shows an original placeholder illustration until the first community photo is added. Add photos either via `/admin` (uploads go to `public/images/uploads/`) or by adding files directly and committing.
 - The **FAQ** and **General Resources** pages are grouped by a `category` field — see `src/content.config.ts` for the fixed set of category values each collection accepts.

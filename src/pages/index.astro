@@ -7,9 +7,14 @@ import { getCollection } from "astro:content";
 
 const news = (await getCollection("news")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
 
-const now = new Date();
+const today = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "America/Denver",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+}).format(new Date());
 const upcomingEvents = (await getCollection("events"))
-  .filter((e) => (e.data.endDate ?? e.data.date) >= now)
+  .filter((e) => (e.data.endDate ?? e.data.date).toISOString().slice(0, 10) >= today)
   .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf())
   .slice(0, 3);
 
