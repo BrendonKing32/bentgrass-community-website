@@ -68,13 +68,24 @@ const pages = defineCollection({
 const gallery = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/gallery' }),
   schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      image: image(),
-      category: z.enum(['events', 'critters', 'weather', 'neighborhood']),
-      date: z.coerce.date().optional(),
-      credit: z.string().optional(),
-    }),
+    z
+      .object({
+        title: z.string(),
+        image: image(),
+        category: z.enum(['events', 'critters', 'weather', 'neighborhood']),
+        date: z.coerce.date().optional(),
+        credit: z.string().optional(),
+        // Starts the retention clock — see src/lib/gallery-retention.js and /site-info/photo-policy.
+        added: z.coerce.date().optional(),
+        // Editor confirms the submitter agreed to the Photo Policy (own photo, consent of people shown).
+        consent: z.boolean().default(false),
+        // Only for site-owned illustrations (e.g. the placeholder) — never for resident photos.
+        permanent: z.boolean().default(false),
+      })
+      .refine((p) => p.permanent || (p.added && p.consent), {
+        message:
+          'Resident gallery photos need an "added" date and "consent: true" (see /site-info/photo-policy). Only site-owned illustrations may set "permanent: true".',
+      }),
 });
 
 const businesses = defineCollection({

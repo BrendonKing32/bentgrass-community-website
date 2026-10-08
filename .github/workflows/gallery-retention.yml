@@ -1,0 +1,44 @@
+name: Gallery retention
+
+# Enforces the Photo Policy: deletes gallery photos past the retention window (monthly)
+# and strips location/camera metadata from newly added ones (on push).
+on:
+  schedule:
+    - cron: "17 9 1 * *"
+  push:
+    branches:
+      - main
+    paths:
+      - src/content/gallery/**
+      - src/assets/gallery/**
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gallery-retention
+  cancel-in-progress: false
+
+jobs:
+  enforce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: node scripts/gallery-retention.mjs
+      - name: Commit changes
+        run: |
+          git add -A src/content/gallery src/assets/gallery
+          if git diff --cached --quiet; then
+            echo "Nothing to change."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898729+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Gallery retention: remove expired photos / strip image metadata"
+          git push

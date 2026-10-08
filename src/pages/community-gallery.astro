@@ -3,8 +3,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import PageHeader from "../components/PageHeader.astro";
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
+import { isGalleryPhotoExpired } from "../lib/gallery-retention.js";
 
-const photos = await getCollection("gallery");
+// Expired photos drop off at the next build even if the scheduled cleanup hasn't deleted them yet.
+const photos = (await getCollection("gallery")).filter((p) => !isGalleryPhotoExpired(p.data));
 
 const categories = [
   { key: "events", label: "Local Events" },
@@ -40,7 +42,8 @@ const grouped = categories
           Submit a photo
         </a>
         <p class="mx-auto mt-4 max-w-md text-xs text-brand-700 dark:text-brand-400">
-          Please share original photos only, and be mindful of privacy for anyone identifiable in the shot.
+          Before sending, please read our <a href="/site-info/photo-policy" class="underline">Photo Policy</a> —
+          original photos only, OK from anyone recognizable, and photos come down after 12 months.
         </p>
       </div>
     ) : (
@@ -70,6 +73,10 @@ const grouped = categories
           <a href="mailto:bentgrassneighborhood@gmail.com?subject=Community%20Gallery%20photo" class="font-semibold text-brand-800 hover:text-brand-900 dark:text-brand-100 dark:hover:text-white">
             Send it our way &rarr;
           </a>
+          <p class="mt-2 text-xs text-brand-700 dark:text-brand-400">
+            Please read the <a href="/site-info/photo-policy" class="underline">Photo Policy</a> first. Photos are
+            removed after 12 months, or sooner if you ask.
+          </p>
         </div>
       </div>
     )}

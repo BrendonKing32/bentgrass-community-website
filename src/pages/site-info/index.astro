@@ -18,6 +18,11 @@ const pages = [
     description: "How we stay politically, religiously, and culturally neutral, and how we decide what's worth including for residents and local businesses.",
     href: "/site-info/neutrality-policy",
   },
+  {
+    title: "Photo Policy",
+    description: "What photos we'll post in the Community Gallery, how we protect privacy, and how long we keep them.",
+    href: "/site-info/photo-policy",
+  },
 ];
 ---
 
@@ -29,7 +34,7 @@ const pages = [
   />
 
   <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-    <div class="grid gap-6 sm:grid-cols-3">
+    <div class="grid gap-6 sm:grid-cols-2">
       {pages.map((page) => (
         <a
           href={page.href}

@@ -126,8 +126,17 @@ collections:
           - { label: "Local Critters", value: "critters" }
           - { label: "Local Weather", value: "weather" }
           - { label: "Neighborhood", value: "neighborhood" }
-      - { label: "Date", name: "date", widget: "datetime", required: false }
-      - { label: "Photo Credit", name: "credit", widget: "string", required: false }
+      - { label: "Date Taken", name: "date", widget: "datetime", required: false }
+      - { label: "Photo Credit", name: "credit", widget: "string", required: false, hint: "First name or initials only, and only if the submitter asked to be credited." }
+      - label: "Date Added"
+        name: "added"
+        widget: "datetime"
+        hint: "Starts the 12-month retention clock. After that the photo is hidden and automatically deleted — see /site-info/photo-policy."
+      - label: "Submitter agreed to the Photo Policy"
+        name: "consent"
+        widget: "boolean"
+        default: false
+        hint: "Required. Only check this if the submitter confirmed it's their own photo and anyone recognizable in it (or a parent, for kids) said OK."
 
   - name: businesses
     label: "Business Directory (pilot)"
