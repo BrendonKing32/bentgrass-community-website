@@ -45,7 +45,7 @@ This repo's `AGENTS.md` documents running `astro dev --background` for agent-dri
 
 **Option A — edit markdown directly.** Every collection in `src/content/` is a folder of `.md` files with frontmatter. Copy an existing file as a template, edit it, commit, and push — the connected Cloudflare Workers Build rebuilds and redeploys automatically.
 
-**Option B — use the content admin at `/admin`.** Once GitHub OAuth is configured (see below), anyone with access to the GitHub repo can go to `https://www.bentgrassneighborhood.org/admin`, log in with GitHub, and add/edit News, Events, Newsletters, FAQ, Resources, Gallery photos, and Business Directory listings through a form UI. Saving creates a commit directly on the `main` branch, which triggers a rebuild.
+**Option B — use the content admin at `/admin`.** Once GitHub OAuth is configured (see below), anyone with access to the GitHub repo can go to `https://www.bentgrassneighborhood.org/admin`, log in with GitHub, and add/edit News, Events, Newsletters, FAQ, Resources, Gallery captions, and Business Directory listings through a form UI (gallery photos themselves are added at `/admin/gallery` — see "Gallery photo storage"). Saving creates a commit directly on the `main` branch, which triggers a rebuild.
 
 Step-by-step, per-collection guides (field references, examples, and common gotchas) live in the [repo wiki](https://github.com/BrendonKing32/bentgrass-community-website/wiki).
 
@@ -115,6 +115,29 @@ Content editors and other collaborators still need to be added to this repo (Set
 ## Content notes
 
 - **Events** are automatically sorted into "Upcoming" and "Past" based on the event's `date` (or `endDate`, for multi-day events) compared to the time of the most recent build. Since this is a static site, "today" only updates when the site rebuilds — pushing any commit (or editing content through `/admin`) triggers a rebuild.
-- The **Gallery** currently shows an original placeholder illustration until the first community photo is added. Add photos either via `/admin` (uploads go to `src/assets/gallery/`) or by adding files directly and committing. Every resident photo must follow the [Photo Policy](src/pages/site-info/photo-policy.astro) and needs an `added` date and `consent: true` in its frontmatter, or the build fails. Only site-owned illustrations may set `permanent: true`.
-- **Gallery retention** is enforced in three places: the gallery page hides photos more than 12 months past `added` at build time (`src/lib/gallery-retention.js` holds the window); the **Gallery retention** GitHub Action (`.github/workflows/gallery-retention.yml`) runs `scripts/gallery-retention.mjs` monthly to delete expired entries and their images from `main`; and the same script strips EXIF/GPS metadata from gallery images on every push that touches them. Deleted files still exist in git history — for a privacy takedown, purge them from history too (e.g. `git filter-repo`, then ask GitHub Support to clear cached views).
+- The **Gallery** shows an original placeholder illustration until the first community photo is added. Resident photos follow the [Photo Policy](src/pages/site-info/photo-policy.astro) and are stored in R2, not git — see "Gallery photo storage" below.
+
+## Gallery photo storage (R2)
+
+Resident gallery photos never go into this (public) repo. Editors add and delete them at **`/admin/gallery`** (same GitHub login as `/admin`; requires write access to the repo):
+
+- The page resizes the photo in the browser and re-encodes it as JPEG, which drops EXIF/GPS metadata. `functions/api/gallery/index.js` rejects any JPEG that still has an EXIF/XMP/IPTC segment, stores the full image and a thumbnail in the R2 bucket under `gallery/`, and commits a metadata-only entry (`src/content/gallery/<id>.md`: caption, `photo` id, dimensions, `added`, `consent: true`) to `main` as the signed-in editor.
+- Photos are served by `functions/api/gallery/[key].js` at `/api/gallery/<id>.jpg` and `/api/gallery/<id>-thumb.jpg`.
+- **Takedowns:** the Delete button removes both images from R2 immediately, then deletes the entry. The CMS can edit captions but can't create or delete gallery entries, so takedowns always go through this page.
+- The content schema rejects any resident gallery entry without an R2 `photo` id, dimensions, `added`, and `consent: true`. Only site-owned illustrations (local `image`) may set `permanent: true`.
+
+**Retention (12 months, set in `src/lib/gallery-retention.js`)** is enforced at every layer:
+
+1. The R2 bucket's lifecycle rule deletes objects under `gallery/` 365 days after upload.
+2. The photo endpoint refuses, and deletes, any object older than the window, in case the rule is missing.
+3. The gallery page and search index hide entries past the window at build time.
+4. The **Gallery retention** GitHub Action (`.github/workflows/gallery-retention.yml`) runs monthly and deletes expired entries from `main`.
+
+**One-time setup:**
+
+1. Create the bucket (name must match `bucket_name` in `wrangler.jsonc`): `npx wrangler r2 bucket create bentgrass-gallery-photos`
+2. Add the lifecycle rule: `npx wrangler r2 bucket lifecycle add bentgrass-gallery-photos gallery-retention gallery/ --expire-days 365`
+3. Deploy — the `GALLERY` binding in `wrangler.jsonc` connects the Worker to the bucket. The bucket stays private (no public access or `r2.dev` URL needed).
+
+For local testing, `npm run preview` (`wrangler dev`) uses a local, simulated bucket.
 - The **FAQ** and **General Resources** pages are grouped by a `category` field — see `src/content.config.ts` for the fixed set of category values each collection accepts.

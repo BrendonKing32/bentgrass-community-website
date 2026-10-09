@@ -91,19 +91,25 @@ import { GALLERY_RETENTION_MONTHS } from "../../lib/gallery-retention.js";
       <h2>What we do before posting</h2>
       <ul>
         <li>
-          <strong>Strip hidden data.</strong> Phone photos carry GPS coordinates and device details. We remove that
-          data automatically from every gallery photo we store.
+          <strong>Strip hidden data.</strong> Phone photos carry GPS coordinates and device details. That data is
+          removed before a photo is uploaded, and our storage refuses any photo that still has it.
         </li>
         <li><strong>Resize, crop, or blur</strong> as needed to meet the rules above.</li>
       </ul>
+
+      <h2>Where photos are stored</h2>
+      <p>
+        Gallery photos are kept in private storage at Cloudflare, the company that hosts this site. They're not
+        stored in the site's public code on GitHub, so when we delete a photo, it's actually gone. Only the
+        caption, category, date, and credit live in the site's code.
+      </p>
 
       <h2>How long we keep photos</h2>
       <p>We don't want to store your photos forever, so everything has an expiration date:</p>
       <ul>
         <li>
           <strong>Gallery photos:</strong> shown for up to {GALLERY_RETENTION_MONTHS} months from the day they're
-          added. After that they're taken down and deleted from the site's files automatically. We check for
-          expired photos every month.
+          added. After that they're deleted from storage automatically — no one has to remember to do it.
         </li>
         <li>
           <strong>Your submission email and its attachments:</strong> deleted from our inbox within 30 days of
@@ -122,9 +128,9 @@ import { GALLERY_RETENTION_MONTHS } from "../../lib/gallery-retention.js";
         </li>
       </ul>
       <p>
-        One honest caveat: this site's source code is public on GitHub, and GitHub keeps a version history of past
-        changes. Deleted photos are no longer part of the site, but older copies can remain in that history. If you
-        want a photo gone from there too, tell us and we'll take the extra steps to purge it.
+        One honest caveat: this site's code is public on GitHub, which keeps a history of past changes. The photos
+        themselves are never in that history, but a past caption and credit can be. If you'd like those purged too,
+        just tell us.
       </p>
 
       <h2>Asking for a photo to come down</h2>
@@ -132,7 +138,7 @@ import { GALLERY_RETENTION_MONTHS } from "../../lib/gallery-retention.js";
         If you're in a photo, took a photo, or a photo shows your home or your kids, you can ask us to take it down
         — no reason needed. Email
         <a href="mailto:bentgrassneighborhood@gmail.com?subject=Photo%20removal">bentgrassneighborhood@gmail.com</a>
-        with "Photo removal" in the subject and tell us which photo. We'll take it down within 7 days, and usually
+        with "Photo removal" in the subject and tell us which photo. We'll delete it within 7 days, and usually
         much sooner.
       </p>
 

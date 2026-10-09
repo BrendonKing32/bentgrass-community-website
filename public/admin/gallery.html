@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Gallery Photos — Content Admin</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root { color-scheme: light dark; --fg: #1f2a1f; --muted: #5b6b5b; --bg: #f7f8f5; --card: #fff; --line: #d9dfd3; --accent: #2f5d34; --danger: #a12b2b; }
+      @media (prefers-color-scheme: dark) { :root { --fg: #e8eee4; --muted: #a3b09f; --bg: #141a14; --card: #1c241c; --line: #334033; --accent: #8cc292; --danger: #ef8a8a; } }
+      * { box-sizing: border-box; }
+      body { margin: 0; font: 16px/1.5 system-ui, sans-serif; color: var(--fg); background: var(--bg); }
+      main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+      h1 { margin: 0 0 4px; font-size: 1.6rem; }
+      h2 { margin: 32px 0 12px; font-size: 1.2rem; }
+      p.lede, .hint { color: var(--muted); }
+      .hint { font-size: 0.85rem; margin: 4px 0 0; }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+      label { display: block; font-weight: 600; margin-top: 16px; }
+      label:first-child { margin-top: 0; }
+      input[type="text"], input[type="date"], select { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid var(--line); border-radius: 8px; font: inherit; background: var(--bg); color: var(--fg); }
+      input[type="file"] { margin-top: 6px; max-width: 100%; }
+      .check { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; }
+      .check input { margin-top: 5px; }
+      button { font: inherit; font-weight: 600; border: 0; border-radius: 999px; padding: 9px 18px; cursor: pointer; background: var(--accent); color: var(--bg); }
+      button:disabled { opacity: 0.5; cursor: default; }
+      button.danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 5px 12px; font-size: 0.85rem; }
+      .row { display: flex; gap: 12px; align-items: center; margin-top: 20px; flex-wrap: wrap; }
+      #status { font-size: 0.95rem; }
+      #status.error { color: var(--danger); }
+      #preview { display: block; max-width: 220px; max-height: 220px; margin-top: 10px; border-radius: 8px; }
+      ul.photos { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+      ul.photos li { display: flex; gap: 12px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px; }
+      ul.photos img { width: 64px; height: 64px; object-fit: cover; border-radius: 6px; flex: none; background: var(--line); }
+      ul.photos .meta { flex: 1; min-width: 0; }
+      ul.photos .meta small { display: block; color: var(--muted); }
+      [hidden] { display: none !important; }
+      a { color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Gallery photos</h1>
+      <p class="lede">
+        Add or take down Community Gallery photos. Photos are stored in private Cloudflare storage — never in the
+        public GitHub repo — and are deleted automatically after 12 months. Every photo must follow the
+        <a href="/site-info/photo-policy" target="_blank">Photo Policy</a>. To edit a caption, use the
+        <a href="/admin/">content admin</a>.
+      </p>
+
+      <div id="signed-out" class="card">
+        <p style="margin-top: 0">Sign in with the GitHub account you use for the content admin.</p>
+        <button id="login" type="button">Sign in with GitHub</button>
+      </div>
+
+      <div id="signed-in" hidden>
+        <form id="upload" class="card">
+          <label for="file">Photo</label>
+          <input id="file" name="file" type="file" accept="image/*" required />
+          <p class="hint">Location and camera data are removed in your browser before upload.</p>
+          <img id="preview" alt="" hidden />
+
+          <label for="title">Caption</label>
+          <input id="title" name="title" type="text" maxlength="200" required />
+
+          <label for="category">Category</label>
+          <select id="category" name="category" required>
+            <option value="events">Local Events</option>
+            <option value="critters">Local Critters</option>
+            <option value="weather">Local Weather</option>
+            <option value="neighborhood">Neighborhood</option>
+          </select>
+
+          <label for="date">Date taken <span style="font-weight: 400">(optional)</span></label>
+          <input id="date" name="date" type="date" />
+
+          <label for="credit">Photo credit <span style="font-weight: 400">(optional)</span></label>
+          <input id="credit" name="credit" type="text" maxlength="40" />
+          <p class="hint">First name or initials only, and only if the submitter asked to be credited.</p>
+
+          <label class="check">
+            <input id="consent" name="consent" type="checkbox" required />
+            <span>
+              The submitter confirmed this is their own photo, and anyone recognizable in it (or a parent, for
+              kids) is OK with it being posted. I've checked it against the Photo Policy.
+            </span>
+          </label>
+
+          <div class="row">
+            <button id="submit" type="submit">Upload photo</button>
+            <span id="status" role="status"></span>
+          </div>
+        </form>
+
+        <h2>Current photos</h2>
+        <p class="hint" style="margin-top: -6px">
+          Deleting removes the photo from storage right away; the gallery page updates after the site rebuilds.
+        </p>
+        <ul id="photos" class="photos"></ul>
+        <p id="photos-empty" class="hint" hidden>No resident photos yet.</p>
+      </div>
+    </main>
+
+    <script>
+      const REPO = "BrendonKing32/bentgrass-community-website";
+      const ENTRY_DIR = "src/content/gallery";
+      const TOKEN_KEY = "gallery-admin-token";
+      const FULL_MAX_EDGE = 2000;
+      const THUMB_SHORT_EDGE = 600;
+      const MAX_BYTES = 5 * 1024 * 1024;
+
+      const $ = (id) => document.getElementById(id);
+      let token = null;
+
+      function storedToken() {
+        try {
+          const own = sessionStorage.getItem(TOKEN_KEY);
+          if (own) return own;
+          // Reuse the content admin's login if the editor is already signed in there.
+          return JSON.parse(localStorage.getItem("sveltia-cms.user") || "null")?.token || null;
+        } catch {
+          return null;
+        }
+      }
+
+      function setStatus(text, isError = false) {
+        $("status").textContent = text;
+        $("status").className = isError ? "error" : "";
+      }
+
+      // Same popup handshake the content admin uses with /api/auth and /api/callback.
+      function login() {
+        const popup = window.open("/api/auth?provider=github", "github-login", "width=600,height=700");
+        function onMessage(e) {
+          if (e.origin !== location.origin || typeof e.data !== "string") return;
+          if (e.data === "authorizing:github") {
+            e.source.postMessage("authorizing:github", e.origin);
+          } else if (e.data.startsWith("authorization:github:success:")) {
+            window.removeEventListener("message", onMessage);
+            token = JSON.parse(e.data.slice("authorization:github:success:".length)).token;
+            try { sessionStorage.setItem(TOKEN_KEY, token); } catch {}
+            popup?.close();
+            showSignedIn();
+          }
+        }
+        window.addEventListener("message", onMessage);
+      }
+
+      function gh(path, accept = "application/vnd.github+json") {
+        return fetch(`https://api.github.com${path}`, { headers: { Authorization: `Bearer ${token}`, Accept: accept } });
+      }
+
+      async function showSignedIn() {
+        const res = await gh(`/repos/${REPO}`);
+        const repo = res.ok ? await res.json() : null;
+        if (!repo?.permissions?.push) {
+          token = null;
+          try { sessionStorage.removeItem(TOKEN_KEY); } catch {}
+          $("signed-out").hidden = false;
+          $("signed-in").hidden = true;
+          if (res.ok) alert("That GitHub account doesn't have edit access to this site.");
+          return;
+        }
+        $("signed-out").hidden = true;
+        $("signed-in").hidden = false;
+        loadPhotos();
+      }
+
+      function field(source, name) {
+        const m = source.match(new RegExp(`^${name}:\\s*(.*)$`, "m"));
+        if (!m) return "";
+        try { return JSON.parse(m[1]); } catch { return m[1].trim(); }
+      }
+
+      async function loadPhotos() {
+        const list = $("photos");
+        list.replaceChildren();
+        const res = await gh(`/repos/${REPO}/contents/${ENTRY_DIR}?ref=main`);
+        if (!res.ok) return;
+        const files = (await res.json()).filter((f) => f.name.endsWith(".md"));
+        const entries = await Promise.all(
+          files.map(async (f) => {
+            const raw = await gh(`/repos/${REPO}/contents/${f.path}?ref=main`, "application/vnd.github.raw+json");
+            const text = raw.ok ? await raw.text() : "";
+            return { id: field(text, "photo"), title: field(text, "title"), added: field(text, "added") };
+          })
+        );
+        const photos = entries.filter((e) => e.id).sort((a, b) => String(b.added).localeCompare(String(a.added)));
+        $("photos-empty").hidden = photos.length > 0;
+        for (const photo of photos) {
+          const li = document.createElement("li");
+          const img = document.createElement("img");
+          img.src = `/api/gallery/${photo.id}-thumb.jpg`;
+          img.alt = "";
+          const meta = document.createElement("div");
+          meta.className = "meta";
+          meta.textContent = photo.title;
+          const small = document.createElement("small");
+          small.textContent = `Added ${String(photo.added).slice(0, 10)}`;
+          meta.append(small);
+          const del = document.createElement("button");
+          del.type = "button";
+          del.className = "danger";
+          del.textContent = "Delete";
+          del.addEventListener("click", () => deletePhoto(photo, del));
+          li.append(img, meta, del);
+          list.append(li);
+        }
+      }
+
+      async function deletePhoto(photo, button) {
+        if (!confirm(`Delete "${photo.title}"? This can't be undone.`)) return;
+        button.disabled = true;
+        const res = await fetch(`/api/gallery?id=${encodeURIComponent(photo.id)}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          alert(body.error || "Delete failed.");
+          button.disabled = false;
+          return;
+        }
+        button.closest("li").remove();
+      }
+
+      function loadImage(file) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error("This browser can't read that image. Try a JPEG or PNG."));
+          img.src = URL.createObjectURL(file);
+        });
+      }
+
+      // Redrawing onto a canvas re-encodes the pixels only, dropping EXIF/GPS metadata.
+      function render(img, scale, quality) {
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.naturalWidth * scale);
+        canvas.height = Math.round(img.naturalHeight * scale);
+        canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+        return new Promise((resolve) =>
+          canvas.toBlob((blob) => resolve({ blob, width: canvas.width, height: canvas.height }), "image/jpeg", quality)
+        );
+      }
+
+      async function prepare(file) {
+        const img = await loadImage(file);
+        const fullScale = Math.min(1, FULL_MAX_EDGE / Math.max(img.naturalWidth, img.naturalHeight));
+        let full = await render(img, fullScale, 0.85);
+        if (full.blob.size > MAX_BYTES) full = await render(img, fullScale, 0.7);
+        const thumbScale = Math.min(1, THUMB_SHORT_EDGE / Math.min(img.naturalWidth, img.naturalHeight));
+        const thumb = await render(img, thumbScale, 0.8);
+        URL.revokeObjectURL(img.src);
+        return { full, thumb };
+      }
+
+      $("file").addEventListener("change", () => {
+        const file = $("file").files[0];
+        $("preview").hidden = !file;
+        if (file) $("preview").src = URL.createObjectURL(file);
+      });
+
+      $("upload").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        $("submit").disabled = true;
+        setStatus("Preparing photo…");
+        try {
+          const { full, thumb } = await prepare($("file").files[0]);
+          const form = new FormData();
+          form.set("title", $("title").value.trim());
+          form.set("category", $("category").value);
+          form.set("date", $("date").value);
+          form.set("credit", $("credit").value.trim());
+          form.set("consent", $("consent").checked ? "yes" : "no");
+          form.set("width", String(full.width));
+          form.set("height", String(full.height));
+          form.set("photo", full.blob, "photo.jpg");
+          form.set("thumb", thumb.blob, "thumb.jpg");
+          setStatus("Uploading…");
+          const res = await fetch("/api/gallery", { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: form });
+          const body = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(body.error || `Upload failed (${res.status}).`);
+          $("upload").reset();
+          $("preview").hidden = true;
+          setStatus("Added! It'll show on the gallery once the site rebuilds (a couple of minutes).");
+          loadPhotos();
+        } catch (err) {
+          setStatus(err.message, true);
+        } finally {
+          $("submit").disabled = false;
+        }
+      });
+
+      $("login").addEventListener("click", login);
+      token = storedToken();
+      if (token) showSignedIn();
+    </script>
+  </body>
+</html>
