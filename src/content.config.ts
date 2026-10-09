@@ -2,15 +2,18 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
+// The CMS saves optional fields left blank as '' — treat that as "not set" rather than failing the build.
+const blank = <T extends z.ZodType>(schema: T) => z.preprocess((v) => (v === '' ? undefined : v), schema.optional());
+
 const news = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/news' }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
       date: z.coerce.date(),
-      summary: z.string().optional(),
-      coverImage: image().optional(),
-      coverImageAlt: z.string().optional(),
+      summary: blank(z.string()),
+      coverImage: blank(image()),
+      coverImageAlt: blank(z.string()),
     }),
 });
 
@@ -20,13 +23,13 @@ const events = defineCollection({
     z.object({
       title: z.string(),
       date: z.coerce.date(),
-      endDate: z.coerce.date().optional(),
-      time: z.string().optional(),
-      location: z.string().optional(),
-      link: z.url().optional(),
-      linkLabel: z.string().optional(),
-      coverImage: image().optional(),
-      coverImageAlt: z.string().optional(),
+      endDate: blank(z.coerce.date()),
+      time: blank(z.string()),
+      location: blank(z.string()),
+      link: blank(z.url()),
+      linkLabel: blank(z.string()),
+      coverImage: blank(image()),
+      coverImageAlt: blank(z.string()),
     }),
 });
 
@@ -35,7 +38,7 @@ const newsletters = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
-    url: z.url().optional(),
+    url: blank(z.url()),
   }),
 });
 
@@ -73,16 +76,16 @@ const gallery = defineCollection({
         title: z.string(),
         // Resident photos live in R2 (uploaded via /admin/gallery), referenced by id and served at
         // /api/gallery/<id>.jpg — never committed to this public repo.
-        photo: z.string().regex(/^\d{4}-\d{2}-\d{2}-[a-z0-9-]{1,60}$/).optional(),
-        width: z.number().int().positive().optional(),
-        height: z.number().int().positive().optional(),
+        photo: blank(z.string().regex(/^\d{4}-\d{2}-\d{2}-[a-z0-9-]{1,60}$/)),
+        width: blank(z.number().int().positive()),
+        height: blank(z.number().int().positive()),
         // Site-owned illustrations only (e.g. the placeholder).
-        image: image().optional(),
+        image: blank(image()),
         category: z.enum(['events', 'critters', 'weather', 'neighborhood']),
-        date: z.coerce.date().optional(),
-        credit: z.string().optional(),
+        date: blank(z.coerce.date()),
+        credit: blank(z.string()),
         // Starts the retention clock — see src/lib/gallery-retention.js and /site-info/photo-policy.
-        added: z.coerce.date().optional(),
+        added: blank(z.coerce.date()),
         // Editor confirms the submitter agreed to the Photo Policy (own photo, consent of people shown).
         consent: z.boolean().default(false),
         // Only for site-owned illustrations (e.g. the placeholder) — never for resident photos.
@@ -110,12 +113,12 @@ const businesses = defineCollection({
         'other',
       ]),
       summary: z.string(),
-      url: z.url().optional(),
-      phone: z.string().optional(),
-      email: z.email().optional(),
+      url: blank(z.url()),
+      phone: blank(z.string()),
+      email: blank(z.email()),
       residentOwned: z.boolean().default(false),
-      logo: image().optional(),
-      logoAlt: z.string().optional(),
+      logo: blank(image()),
+      logoAlt: blank(z.string()),
       listed: z.boolean().default(true),
     }),
 });
