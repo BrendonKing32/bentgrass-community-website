@@ -1,0 +1,152 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import { GALLERY_RETENTION_MONTHS } from "../../lib/gallery-retention.js";
+---
+
+<BaseLayout title="Photo Policy" description="What photos we accept for the Community Gallery, how we protect privacy, and how long we keep them.">
+  <PageHeader eyebrow="Site Info" title="Photo Policy" description="Last updated: October 2026" />
+  <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <div class="prose max-w-none prose-headings:font-display">
+      <p>
+        We love seeing neighborhood life through your lens. This page covers what we'll post, what we won't, and
+        how long we hang on to your photos — which, by design, isn't forever. It applies to the
+        <a href="/community-gallery">Community Gallery</a> and to any resident photo we use elsewhere on the site
+        or in the newsletter. Every photo has to meet these rules before it goes up; editors check each one.
+      </p>
+
+      <h2>The short version</h2>
+      <ul>
+        <li>Only send photos you took yourself.</li>
+        <li>Anyone recognizable in the shot has to be OK with it — and for kids, that means a parent or guardian.</li>
+        <li>No house numbers, license plates, or other details that point to a specific home or person.</li>
+        <li>Gallery photos come down after {GALLERY_RETENTION_MONTHS} months, or sooner if you ask.</li>
+      </ul>
+
+      <h2>What we're looking for</h2>
+      <p>
+        Photos from in and around Bent Grass that fit one of the gallery's categories: local events, local
+        critters, local weather, and everyday neighborhood scenes. Shots taken from public spaces, common areas, or
+        your own property are best.
+      </p>
+
+      <h2>What we won't post</h2>
+      <p>We'll decline (or ask to crop or blur) any photo that includes:</p>
+      <ul>
+        <li>
+          <strong>People who haven't said yes.</strong> If someone is recognizable, they need to be OK with the photo
+          being online. Crowds at a public event where no one is the focus are fine.
+        </li>
+        <li>
+          <strong>Identifiable children without a parent or guardian's OK.</strong> Even with permission, we won't
+          post kids' names, schools, or anything that ties a child to a specific home.
+        </li>
+        <li>
+          <strong>Details that identify a home or person</strong> — house numbers, license plates, mail, people
+          visible through windows, or security cameras and keypads.
+        </li>
+        <li>
+          <strong>Other people's private property up close</strong> — backyards over a fence, through windows, or
+          from a drone. (Colorado law also restricts drone photography of people in private places; see the
+          <a href="/faq">FAQ</a>.)
+        </li>
+        <li>
+          <strong>"Callout" photos</strong> — a neighbor's parking, trash cans, yard, pet, or a dispute. If something
+          needs addressing, contact the HOA, the district, or the authorities instead.
+        </li>
+        <li>
+          <strong>Emergencies, accidents, injuries, or crime scenes.</strong>
+        </li>
+        <li>
+          <strong>Political, campaign, or religious messaging</strong> as the subject of the photo, or anything
+          promotional — see our <a href="/site-info/neutrality-policy">Neutrality Policy</a>.
+        </li>
+        <li>
+          <strong>Wildlife nests, dens, or burrows with a findable location,</strong> or animals being approached,
+          fed, or disturbed for the shot.
+        </li>
+        <li>
+          <strong>Photos you didn't take</strong>, images with someone else's watermark, or AI-generated or heavily
+          altered images presented as real.
+        </li>
+        <li>Anything graphic, explicit, hateful, or otherwise not suitable for all ages.</li>
+      </ul>
+      <p>Editors have the final say and may decline any photo without giving a reason.</p>
+
+      <h2>How to submit</h2>
+      <p>
+        Email your photo to <a href="mailto:bentgrassneighborhood@gmail.com?subject=Community%20Gallery%20photo">bentgrassneighborhood@gmail.com</a>
+        with a short caption, roughly when it was taken, and whether you'd like credit (first name or initials
+        only — we don't publish full names). By sending a photo, you confirm that:
+      </p>
+      <ul>
+        <li>you took it yourself, and</li>
+        <li>anyone recognizable in it (or their parent or guardian) is OK with it being posted.</li>
+      </ul>
+      <p>
+        You keep the copyright. You're giving us permission to show the photo on this site and in the newsletter
+        for as long as this policy allows, and you can take that permission back at any time.
+      </p>
+
+      <h2>What we do before posting</h2>
+      <ul>
+        <li>
+          <strong>Strip hidden data.</strong> Phone photos carry GPS coordinates and device details. That data is
+          removed before a photo is uploaded, and our storage refuses any photo that still has it.
+        </li>
+        <li><strong>Resize, crop, or blur</strong> as needed to meet the rules above.</li>
+      </ul>
+
+      <h2>Where photos are stored</h2>
+      <p>
+        Gallery photos are kept in private storage at Cloudflare, the company that hosts this site. They're not
+        stored in the site's public code on GitHub, so when we delete a photo, it's actually gone. Only the
+        caption, category, date, and credit live in the site's code.
+      </p>
+
+      <h2>How long we keep photos</h2>
+      <p>We don't want to store your photos forever, so everything has an expiration date:</p>
+      <ul>
+        <li>
+          <strong>Gallery photos:</strong> shown for up to {GALLERY_RETENTION_MONTHS} months from the day they're
+          added. After that they're deleted from storage automatically — no one has to remember to do it.
+        </li>
+        <li>
+          <strong>Your submission email and its attachments:</strong> deleted from our inbox within 30 days of
+          posting the photo, or of deciding not to.
+        </li>
+        <li>
+          <strong>Photos we decline:</strong> never posted, and deleted within 30 days along with the email.
+        </li>
+        <li>
+          <strong>Photos used in a news post or event listing</strong> stay with that post. Ask and we'll swap
+          one out at any time.
+        </li>
+        <li>
+          <strong>Newsletters:</strong> once an issue is emailed we can't pull it back from inboxes, but we can
+          remove a photo from the online archive.
+        </li>
+      </ul>
+      <p>
+        One honest caveat: this site's code is public on GitHub, which keeps a history of past changes. The photos
+        themselves are never in that history, but a past caption and credit can be. If you'd like those purged too,
+        just tell us.
+      </p>
+
+      <h2>Asking for a photo to come down</h2>
+      <p>
+        If you're in a photo, took a photo, or a photo shows your home or your kids, you can ask us to take it down
+        — no reason needed. Email
+        <a href="mailto:bentgrassneighborhood@gmail.com?subject=Photo%20removal">bentgrassneighborhood@gmail.com</a>
+        with "Photo removal" in the subject and tell us which photo. We'll delete it within 7 days, and usually
+        much sooner.
+      </p>
+
+      <h2>If things change</h2>
+      <p>
+        If we change these rules or how long we keep photos, we'll update this page and the date up top. Photos
+        already posted follow whichever version is stricter.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
+import { isGalleryPhotoExpired } from "../lib/gallery-retention.js";
 
 export const prerender = true;
 
@@ -74,7 +75,7 @@ export const GET: APIRoute = async () => {
       url: `/community-resources/monthly-newsletters`,
       date: e.data.date.toISOString(),
     })),
-    ...gallery.map((e) => ({
+    ...gallery.filter((e) => !isGalleryPhotoExpired(e.data)).map((e) => ({
       type: "gallery" as const,
       title: e.data.title,
       excerpt: "",

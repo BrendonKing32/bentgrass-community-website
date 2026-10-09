@@ -1,0 +1,36 @@
+name: Gallery retention
+
+# Enforces the Photo Policy: monthly, deletes gallery entries whose photo is past the retention
+# window. The photos themselves are in R2 and expire via the bucket's lifecycle rule.
+on:
+  schedule:
+    - cron: "17 9 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gallery-retention
+  cancel-in-progress: false
+
+jobs:
+  enforce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: node scripts/gallery-retention.mjs
+      - name: Commit changes
+        run: |
+          git add -A src/content/gallery
+          if git diff --cached --quiet; then
+            echo "Nothing to change."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898729+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Gallery retention: remove expired photo entries"
+          git push

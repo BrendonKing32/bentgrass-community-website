@@ -10,7 +10,10 @@
     // Browser navigations (e.g. the CMS login popup opening /api/auth) are
     // otherwise served the 404 page without ever reaching the Worker.
     "run_worker_first": ["/api/*"]
-  }
+  },
+  // Community Gallery photos (see README "Gallery photo storage"). Not in git, so retention
+  // and takedowns actually delete them.
+  "r2_buckets": [{ "binding": "GALLERY", "bucket_name": "bentgrass-gallery-photos" }]
   // Once the domain's zone is active on Cloudflare (see README "Deployment"),
   // either add a Custom Domain via the dashboard, or uncomment:
   // "routes": [{ "pattern": "www.bentgrassneighborhood.org", "custom_domain": true }]

@@ -109,14 +109,22 @@ collections:
 
   - name: gallery
     label: "Community Gallery"
+    description: "To add or delete photos, use the Gallery Photos page at /admin/gallery — photos are stored in Cloudflare R2, not in this repo. Here you can only fix a caption, category, date, or credit."
     folder: "src/content/gallery"
-    create: true
+    create: false
+    delete: false
     slug: "{{slug}}"
     fields:
       - { label: "Title / Caption", name: "title", widget: "string" }
-      - label: "Photo"
+      - { label: "Photo ID (R2)", name: "photo", widget: "string", required: false, readonly: true }
+      - { label: "Width", name: "width", widget: "number", value_type: "int", required: false, readonly: true }
+      - { label: "Height", name: "height", widget: "number", value_type: "int", required: false, readonly: true }
+      - label: "Illustration"
         name: "image"
         widget: "image"
+        required: false
+        readonly: true
+        hint: "Site-owned illustrations only. Resident photos go through /admin/gallery."
         media_folder: "../../assets/gallery"
         public_folder: "../../assets/gallery"
       - label: "Category"
@@ -127,8 +135,11 @@ collections:
           - { label: "Local Critters", value: "critters" }
           - { label: "Local Weather", value: "weather" }
           - { label: "Neighborhood", value: "neighborhood" }
-      - { label: "Date", name: "date", widget: "datetime", required: false }
-      - { label: "Photo Credit", name: "credit", widget: "string", required: false }
+      - { label: "Date Taken", name: "date", widget: "datetime", required: false }
+      - { label: "Photo Credit", name: "credit", widget: "string", required: false, hint: "First name or initials only, and only if the submitter asked to be credited." }
+      - { label: "Date Added", name: "added", widget: "datetime", required: false, readonly: true, hint: "Starts the 12-month retention clock." }
+      - { label: "Submitter agreed to the Photo Policy", name: "consent", widget: "boolean", required: false, readonly: true }
+      - { label: "Site-owned (never expires)", name: "permanent", widget: "boolean", required: false, readonly: true }
 
   - name: businesses
     label: "Business Directory (pilot)"

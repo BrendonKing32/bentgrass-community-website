@@ -68,13 +68,30 @@ const pages = defineCollection({
 const gallery = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/gallery' }),
   schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      image: image(),
-      category: z.enum(['events', 'critters', 'weather', 'neighborhood']),
-      date: z.coerce.date().optional(),
-      credit: z.string().optional(),
-    }),
+    z
+      .object({
+        title: z.string(),
+        // Resident photos live in R2 (uploaded via /admin/gallery), referenced by id and served at
+        // /api/gallery/<id>.jpg — never committed to this public repo.
+        photo: z.string().regex(/^\d{4}-\d{2}-\d{2}-[a-z0-9-]{1,60}$/).optional(),
+        width: z.number().int().positive().optional(),
+        height: z.number().int().positive().optional(),
+        // Site-owned illustrations only (e.g. the placeholder).
+        image: image().optional(),
+        category: z.enum(['events', 'critters', 'weather', 'neighborhood']),
+        date: z.coerce.date().optional(),
+        credit: z.string().optional(),
+        // Starts the retention clock — see src/lib/gallery-retention.js and /site-info/photo-policy.
+        added: z.coerce.date().optional(),
+        // Editor confirms the submitter agreed to the Photo Policy (own photo, consent of people shown).
+        consent: z.boolean().default(false),
+        // Only for site-owned illustrations (e.g. the placeholder) — never for resident photos.
+        permanent: z.boolean().default(false),
+      })
+      .refine((p) => Boolean(p.permanent ? p.image && !p.photo : p.photo && p.width && p.height && p.added && p.consent), {
+        message:
+          'Resident gallery photos must be added through /admin/gallery (R2 "photo", dimensions, "added" date, "consent: true"). Only site-owned illustrations may set "permanent: true" with a local "image".',
+      }),
 });
 
 const businesses = defineCollection({
