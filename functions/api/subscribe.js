@@ -1,7 +1,7 @@
 // Cloudflare Pages Function: handles newsletter signups by creating a
 // subscriber directly through Buttondown's API. Requires the
-// BUTTONDOWN_API_KEY secret (see README "Newsletter"). If TURNSTILE_SECRET_KEY
-// is set, a Cloudflare Turnstile token is verified before anything else.
+// BUTTONDOWN_API_KEY and TURNSTILE_SECRET_KEY secrets (see README "Newsletter").
+// The Cloudflare Turnstile token is verified before anything else.
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -33,24 +33,30 @@ export async function onRequestPost(context) {
     return redirectTo(redirectBase, "success");
   }
 
+  // Fail closed: without the secret there's no way to tell visitors from bots.
+  if (!env.TURNSTILE_SECRET_KEY) {
+    console.error("TURNSTILE_SECRET_KEY is not set; rejecting newsletter signup");
+    return redirectTo(redirectBase, "error");
+  }
   const token = form.get("cf-turnstile-response");
-  if (env.TURNSTILE_SECRET_KEY) {
-    const verification = await fetch(
-      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-      {
-        method: "POST",
-        body: new URLSearchParams({
-          secret: env.TURNSTILE_SECRET_KEY,
-          response: typeof token === "string" ? token : "",
-          remoteip: request.headers.get("CF-Connecting-IP") || "",
-        }),
-      },
-    )
-      .then((r) => r.json())
-      .catch(() => null);
-    if (!verification?.success) {
-      return redirectTo(redirectBase, "blocked");
-    }
+  if (typeof token !== "string" || token === "" || token.length > 2048) {
+    return redirectTo(redirectBase, "blocked");
+  }
+  const verification = await fetch(
+    "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+    {
+      method: "POST",
+      body: new URLSearchParams({
+        secret: env.TURNSTILE_SECRET_KEY,
+        response: token,
+        remoteip: request.headers.get("CF-Connecting-IP") || "",
+      }),
+    },
+  )
+    .then((r) => r.json())
+    .catch(() => null);
+  if (!verification?.success) {
+    return redirectTo(redirectBase, "blocked");
   }
 
   const email = String(form.get("email") || "")
