@@ -22,7 +22,7 @@ src/
   pages/           Routes — mostly thin wrappers that query content/ and render it
 public/
   admin/           Sveltia CMS admin UI (config.yml + index.html)
-  _headers         Response headers for all static assets (currently noindex)
+  robots.txt       Allows search crawlers and points to the generated sitemap
 functions/api/     GitHub OAuth handlers + the newsletter signup endpoint, written as Pages
                    Functions and compiled into the Worker at build time
 ```
@@ -63,7 +63,7 @@ This site deploys as a **Worker with static assets** (Cloudflare's current recom
 4. Once your domain's DNS zone is active on Cloudflare, add the custom domain: Worker → **Settings → Domains & Routes → Add → Custom Domain**, enter `www.bentgrassneighborhood.org`. (You can also uncomment the `routes` block already sketched out in `wrangler.jsonc` and let a deploy create it instead.) Add a redirect rule from the bare domain to `www` under the zone's **Rules → Redirect Rules**.
 5. Keep the existing Google Sites site live until DNS has fully cut over and you've spot-checked the new site.
 
-**Search engine indexing is off.** `public/_headers` sends `X-Robots-Tag: noindex` on every page and file, so search engines won't list the site. `robots.txt` still allows crawling on purpose, because a crawler has to fetch a page to see the header. Delete that rule from `public/_headers` when the site should appear in search results.
+Search engine indexing is enabled. `robots.txt` allows crawling and points crawlers to the generated sitemap; page metadata includes canonical URLs and social sharing details.
 
 **Manual/one-off deploys** (no git push needed): `npm run build && npm run deploy` from your machine, using an authenticated `wrangler` (run `npx wrangler login` once).
 
@@ -115,7 +115,12 @@ Content editors and other collaborators still need to be added to this repo (Set
 ## Content notes
 
 - **Events** are automatically sorted into "Upcoming" and "Past" based on the event's `date` (or `endDate`, for multi-day events) compared to the time of the most recent build. Since this is a static site, "today" only updates when the site rebuilds — pushing any commit (or editing content through `/admin`) triggers a rebuild.
+- The **Events & Calendar** page includes a complete event list in the HTML; the interactive calendar enhances it when JavaScript is available.
 - The **Gallery** shows an original placeholder illustration until the first community photo is added. Resident photos follow the [Photo Policy](src/pages/site-info/photo-policy.astro) and are stored in R2, not git — see "Gallery photo storage" below.
+
+## Keeping information current
+
+At least once a quarter, a content editor should verify district and county contacts, meeting schedules, emergency links, and other official resources against their source websites. Check event dates and registration links as soon as organizers share changes, and respond promptly to resident reports of broken or outdated information. Update the relevant content file or page, then preview the change and confirm the automatic build succeeds. When a page has a visible "Last updated" date, update it only after reviewing that page's information.
 
 ## Gallery photo storage (R2)
 
