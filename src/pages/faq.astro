@@ -46,28 +46,28 @@ const visibleGroups = grouped.filter((g) => g.items.length > 0);
   <section class="mx-auto max-w-3xl px-4 py-12 sm:px-6">
     <div class="mb-10 flex flex-col gap-6">
       <div>
-        <label for="faq-filter" class="block text-sm font-semibold text-brand-800 dark:text-brand-100">Filter questions</label>
+        <label for="faq-filter" class="block text-sm font-semibold text-brand-800 dark:text-night-100">Filter questions</label>
         <input
           id="faq-filter"
           type="search"
           autocomplete="off"
           placeholder="Type a word like “fence”, “water”, or “HOA”…"
-          class="mt-2 w-full rounded-md border border-brand-300 bg-white px-3 py-2 text-brand-900 placeholder:text-brand-700 dark:placeholder:text-brand-300 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 dark:border-brand-700 dark:bg-brand-950 dark:text-brand-50"
+          class="mt-2 w-full rounded-md border border-brand-300 bg-white px-3 py-2 text-brand-900 placeholder:text-brand-700 dark:placeholder:text-night-300 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 dark:border-night-700 dark:bg-night-950 dark:text-night-50"
         />
-        <p id="faq-filter-status" class="mt-2 min-h-5 text-sm text-brand-600 dark:text-brand-300" role="status" aria-live="polite"></p>
-        <p class="text-sm text-brand-700 dark:text-brand-400">
+        <p id="faq-filter-status" class="mt-2 min-h-5 text-sm text-brand-600 dark:text-night-300" role="status" aria-live="polite"></p>
+        <p class="text-sm text-brand-700 dark:text-night-400">
           Looking for something beyond the FAQ? Use the search icon in the header to search the whole site.
         </p>
       </div>
 
       <nav aria-label="FAQ categories">
-        <p class="text-sm font-semibold text-brand-800 dark:text-brand-100">Jump to a category</p>
+        <p class="text-sm font-semibold text-brand-800 dark:text-night-100">Jump to a category</p>
         <ul class="mt-2 flex flex-wrap gap-2">
           {visibleGroups.map((group) => (
             <li>
               <a
                 href={`#${slug(group.category)}`}
-                class="inline-flex min-h-11 items-center rounded-full border border-brand-300 px-3 py-1.5 text-sm font-medium text-brand-800 hover:bg-brand-100 dark:border-brand-700 dark:text-brand-100 dark:hover:bg-brand-900"
+                class="inline-flex min-h-11 items-center rounded-full border border-brand-300 px-3 py-1.5 text-sm font-medium text-brand-800 hover:bg-brand-100 dark:border-night-700 dark:text-night-100 dark:hover:bg-night-900"
               >
                 {group.category}
               </a>
@@ -77,18 +77,18 @@ const visibleGroups = grouped.filter((g) => g.items.length > 0);
       </nav>
     </div>
 
-    <p id="faq-no-results" class="hidden rounded-xl border border-brand-200 bg-white p-5 text-brand-700 dark:border-brand-800 dark:bg-brand-900 dark:text-brand-200" hidden>
+    <p id="faq-no-results" class="hidden rounded-xl border border-brand-200 bg-white p-5 text-brand-700 dark:border-night-800 dark:bg-night-900 dark:text-night-200" hidden>
       No questions match your filter. Try a different word, or clear the box to see everything.
     </p>
 
     <div class="flex flex-col gap-10">
       {visibleGroups.map((group) => (
         <div data-faq-group id={slug(group.category)} class="scroll-mt-24">
-          <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">{group.category}</h2>
+          <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-night-50">{group.category}</h2>
           <div class="mt-4 flex flex-col gap-3">
             {group.items.map(({ item, Content }) => (
-              <details data-faq-item id={`faq-${item.id}`} class="group rounded-xl border border-brand-200 bg-white p-5 shadow-sm open:shadow-md dark:border-brand-800 dark:bg-brand-900">
-                <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-brand-800 [&::-webkit-details-marker]:hidden dark:text-brand-100">
+              <details data-faq-item id={`faq-${item.id}`} class="group rounded-xl border border-brand-200 bg-white p-5 shadow-sm open:shadow-md dark:border-night-800 dark:bg-night-900">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-brand-800 [&::-webkit-details-marker]:hidden dark:text-night-100">
                   {item.data.question}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -101,7 +101,7 @@ const visibleGroups = grouped.filter((g) => g.items.length > 0);
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                   </svg>
                 </summary>
-                <div class="prose prose-sm mt-3 max-w-none text-brand-700 dark:text-brand-200">
+                <div class="prose prose-sm mt-3 max-w-none text-brand-700 dark:text-night-200">
                   <Content />
                 </div>
               </details>

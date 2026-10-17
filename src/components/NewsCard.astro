@@ -19,7 +19,7 @@ const formattedDate = entry.data.date.toLocaleDateString("en-US", {
 });
 ---
 
-<article id={`news-${entry.id}`} class="overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-sm dark:border-brand-800 dark:bg-brand-900">
+<article id={`news-${entry.id}`} class="overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-sm dark:border-night-800 dark:bg-night-900">
   {coverImage && (
     <Image
       src={coverImage}
@@ -32,11 +32,11 @@ const formattedDate = entry.data.date.toLocaleDateString("en-US", {
   )}
   <div class="p-6">
     <p class="text-xs font-semibold uppercase tracking-wide text-brand-700 dark:text-brand-400">{formattedDate}</p>
-    <h3 class="mt-1 font-display text-xl font-semibold text-brand-900 dark:text-brand-50">{entry.data.title}</h3>
+    <h3 class="mt-1 font-display text-xl font-semibold text-brand-900 dark:text-night-50">{entry.data.title}</h3>
     {compact ? (
-      <p class="mt-2 text-brand-700 dark:text-brand-200">{entry.data.summary}</p>
+      <p class="mt-2 text-brand-700 dark:text-night-200">{entry.data.summary}</p>
     ) : (
-      <div class="prose prose-sm mt-3 max-w-none text-brand-800 prose-headings:font-display dark:text-brand-100">
+      <div class="prose prose-sm mt-3 max-w-none text-brand-800 prose-headings:font-display dark:text-night-100">
         <Content />
       </div>
     )}

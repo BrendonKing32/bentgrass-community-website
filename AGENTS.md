@@ -24,7 +24,7 @@ Collections and their schemas are defined in [src/content.config.ts](src/content
 
 ## Styling conventions
 
-Tailwind v4 theme lives in the `@theme` block of [src/styles/global.css](src/styles/global.css) (there's no `tailwind.config.js`) — custom color scales `brand-*`/`accent-*` and fonts `font-sans` (Inter) / `font-display` (Fraunces, used for headings). Use `class:list={[...]}` for conditional classes, as in [src/components/EventCard.astro](src/components/EventCard.astro).
+Tailwind v4 theme lives in the `@theme` block of [src/styles/global.css](src/styles/global.css) (there's no `tailwind.config.js`) — custom color scales `brand-*`/`accent-*`, plus `night-*` (low-chroma green-gray used for dark-mode surfaces, borders and body text; keep `brand-*` in dark mode for accents only) and fonts `font-sans` (Inter) / `font-display` (Fraunces, used for headings). Use `class:list={[...]}` for conditional classes, as in [src/components/EventCard.astro](src/components/EventCard.astro).
 
 ## Cloudflare Pages Functions (`functions/api/`)
 

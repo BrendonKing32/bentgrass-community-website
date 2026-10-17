@@ -14,7 +14,7 @@ const pages = [
 ];
 ---
 
-<nav aria-label="Community resources" class="border-b border-brand-200 bg-white dark:border-brand-800 dark:bg-brand-900">
+<nav aria-label="Community resources" class="border-b border-brand-200 bg-white dark:border-night-800 dark:bg-night-900">
   <ul class="mx-auto flex max-w-6xl flex-wrap gap-x-2 px-4 sm:px-6">
     {pages.map((page) => (
       <li>
@@ -24,8 +24,8 @@ const pages = [
           class:list={[
             "inline-flex min-h-11 items-center border-b-2 px-3 text-sm font-semibold",
             page.href === current
-              ? "border-brand-700 text-brand-900 dark:border-brand-200 dark:text-brand-50"
-              : "border-transparent text-brand-700 hover:border-brand-300 hover:text-brand-900 dark:text-brand-200 dark:hover:text-white",
+              ? "border-brand-700 text-brand-900 dark:border-brand-200 dark:text-night-50"
+              : "border-transparent text-brand-700 hover:border-brand-300 hover:text-brand-900 dark:text-night-200 dark:hover:text-white",
           ]}
         >
           {page.label}

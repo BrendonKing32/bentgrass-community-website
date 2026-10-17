@@ -9,12 +9,12 @@ interface Props {
 const { eyebrow, eyebrowHref, title, description } = Astro.props;
 ---
 
-<div class="border-b border-brand-200 bg-gradient-to-b from-brand-100 to-brand-50 dark:border-brand-800 dark:from-brand-900 dark:to-brand-950">
+<div class="border-b border-brand-200 bg-gradient-to-b from-brand-100 to-brand-50 dark:border-night-800 dark:from-night-900 dark:to-night-950">
   <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
     {eyebrow && (
       <p class="text-sm font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-400">
         {eyebrowHref ? (
-          <a href={eyebrowHref} class="underline decoration-brand-300 underline-offset-4 hover:text-brand-800 dark:decoration-brand-600 dark:hover:text-brand-200">
+          <a href={eyebrowHref} class="underline decoration-brand-300 underline-offset-4 hover:text-brand-800 dark:decoration-brand-600 dark:hover:text-night-200">
             {eyebrow}
           </a>
         ) : (
@@ -22,7 +22,7 @@ const { eyebrow, eyebrowHref, title, description } = Astro.props;
         )}
       </p>
     )}
-    <h1 class="mt-2 font-display text-3xl font-semibold text-brand-900 sm:text-4xl dark:text-brand-50">{title}</h1>
-    {description && <p class="mt-4 max-w-2xl text-lg text-brand-800 dark:text-brand-200">{description}</p>}
+    <h1 class="mt-2 font-display text-3xl font-semibold text-brand-900 sm:text-4xl dark:text-night-50">{title}</h1>
+    {description && <p class="mt-4 max-w-2xl text-lg text-brand-800 dark:text-night-200">{description}</p>}
   </div>
 </div>
