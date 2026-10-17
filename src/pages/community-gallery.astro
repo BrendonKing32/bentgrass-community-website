@@ -18,6 +18,7 @@ const categories = [
 const grouped = categories
   .map((cat) => ({ ...cat, items: photos.filter((p) => p.data.category === cat.key) }))
   .filter((g) => g.items.length > 0);
+const photoSubmissionHref = `mailto:bentgrassneighborhood@gmail.com?subject=Community%20Gallery%20photo&body=${encodeURIComponent("Caption:\nApproximate date taken:\nCredit preference (first name or initials only):\n\nI took this photo and have permission from anyone recognizable in it (or their parent/guardian) to share it.")}`;
 ---
 
 <BaseLayout title="Community Gallery" description="Photos from around the Bent Grass neighborhood, shared by residents.">
@@ -36,14 +37,15 @@ const grouped = categories
           add it here.
         </p>
         <a
-          href="mailto:bentgrassneighborhood@gmail.com?subject=Community%20Gallery%20photo"
+          href={photoSubmissionHref}
           class="mt-6 inline-flex items-center justify-center rounded-full bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-800"
         >
           Submit a photo
         </a>
         <p class="mx-auto mt-4 max-w-md text-xs text-brand-700 dark:text-night-400">
-          Before sending, please read our <a href="/site-info/photo-policy" class="underline">Photo Policy</a> —
-          original photos only, OK from anyone recognizable, and photos come down after 12 months.
+          Attach your original photo and add a short caption, approximate date, and optional credit (first name or
+          initials only). Please read our <a href="/site-info/photo-policy" class="underline">Photo Policy</a> —
+          anyone recognizable must agree, and photos come down after 12 months.
         </p>
       </div>
     ) : (
@@ -89,12 +91,13 @@ const grouped = categories
         ))}
         <div class="rounded-2xl border border-dashed border-brand-300 bg-white p-6 text-center dark:border-night-700 dark:bg-night-900">
           <p class="text-brand-700 dark:text-night-200">Have a photo to add?</p>
-          <a href="mailto:bentgrassneighborhood@gmail.com?subject=Community%20Gallery%20photo" class="font-semibold text-brand-800 hover:text-brand-900 dark:text-night-100 dark:hover:text-white">
+          <a href={photoSubmissionHref} class="font-semibold text-brand-800 hover:text-brand-900 dark:text-night-100 dark:hover:text-white">
             Send it our way &rarr;
           </a>
           <p class="mt-2 text-xs text-brand-700 dark:text-night-400">
-            Please read the <a href="/site-info/photo-policy" class="underline">Photo Policy</a> first. Photos are
-            removed after 12 months, or sooner if you ask.
+            Attach the original photo with a short caption and approximate date. Please read the
+            <a href="/site-info/photo-policy" class="underline">Photo Policy</a> first. Photos are removed after
+            12 months, or sooner if you ask.
           </p>
         </div>
       </div>
