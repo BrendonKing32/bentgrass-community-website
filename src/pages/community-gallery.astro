@@ -30,9 +30,9 @@ const photoSubmissionHref = `mailto:bentgrassneighborhood@gmail.com?subject=Comm
 
   <section class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
     {grouped.length === 0 ? (
-      <div class="rounded-2xl border border-dashed border-brand-300 bg-white p-10 text-center dark:border-brand-700 dark:bg-brand-900">
-        <p class="font-display text-xl font-semibold text-brand-900 dark:text-brand-50">No photos yet — be the first!</p>
-        <p class="mx-auto mt-2 max-w-md text-brand-600 dark:text-brand-300">
+      <div class="rounded-2xl border border-dashed border-brand-300 bg-white p-10 text-center dark:border-night-700 dark:bg-night-900">
+        <p class="font-display text-xl font-semibold text-brand-900 dark:text-night-50">No photos yet — be the first!</p>
+        <p class="mx-auto mt-2 max-w-md text-brand-600 dark:text-night-300">
           Have a great shot from a neighborhood event, local wildlife, or a Colorado sky? Send it our way and we'll
           add it here.
         </p>
@@ -42,7 +42,7 @@ const photoSubmissionHref = `mailto:bentgrassneighborhood@gmail.com?subject=Comm
         >
           Submit a photo
         </a>
-        <p class="mx-auto mt-4 max-w-md text-xs text-brand-700 dark:text-brand-400">
+        <p class="mx-auto mt-4 max-w-md text-xs text-brand-700 dark:text-night-400">
           Attach your original photo and add a short caption, approximate date, and optional credit (first name or
           initials only). Please read our <a href="/site-info/photo-policy" class="underline">Photo Policy</a> —
           anyone recognizable must agree, and photos come down after 12 months.
@@ -52,10 +52,10 @@ const photoSubmissionHref = `mailto:bentgrassneighborhood@gmail.com?subject=Comm
       <div class="flex flex-col gap-10">
         {grouped.map((group) => (
           <div>
-            <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">{group.label}</h2>
+            <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-night-50">{group.label}</h2>
             <div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
               {group.items.map((photo) => (
-                <figure class="overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-sm dark:border-brand-800 dark:bg-brand-900">
+                <figure class="overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-sm dark:border-night-800 dark:bg-night-900">
                   {photo.data.photo ? (
                     <a href={`/api/gallery/${photo.data.photo}.jpg`} target="_blank" rel="noopener">
                       <img
@@ -80,21 +80,21 @@ const photoSubmissionHref = `mailto:bentgrassneighborhood@gmail.com?subject=Comm
                       />
                     )
                   )}
-                  <figcaption class="p-3 text-sm text-brand-700 dark:text-brand-200">
+                  <figcaption class="p-3 text-sm text-brand-700 dark:text-night-200">
                     {photo.data.title}
-                    {photo.data.credit && <span class="block text-xs text-brand-500 dark:text-brand-400">Photo: {photo.data.credit}</span>}
+                    {photo.data.credit && <span class="block text-xs text-brand-500 dark:text-night-400">Photo: {photo.data.credit}</span>}
                   </figcaption>
                 </figure>
               ))}
             </div>
           </div>
         ))}
-        <div class="rounded-2xl border border-dashed border-brand-300 bg-white p-6 text-center dark:border-brand-700 dark:bg-brand-900">
-          <p class="text-brand-700 dark:text-brand-200">Have a photo to add?</p>
-          <a href={photoSubmissionHref} class="font-semibold text-brand-800 hover:text-brand-900 dark:text-brand-100 dark:hover:text-white">
+        <div class="rounded-2xl border border-dashed border-brand-300 bg-white p-6 text-center dark:border-night-700 dark:bg-night-900">
+          <p class="text-brand-700 dark:text-night-200">Have a photo to add?</p>
+          <a href={photoSubmissionHref} class="font-semibold text-brand-800 hover:text-brand-900 dark:text-night-100 dark:hover:text-white">
             Send it our way &rarr;
           </a>
-          <p class="mt-2 text-xs text-brand-700 dark:text-brand-400">
+          <p class="mt-2 text-xs text-brand-700 dark:text-night-400">
             Attach the original photo with a short caption and approximate date. Please read the
             <a href="/site-info/photo-policy" class="underline">Photo Policy</a> first. Photos are removed after
             12 months, or sooner if you ask.

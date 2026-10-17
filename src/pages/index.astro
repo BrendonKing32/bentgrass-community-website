@@ -102,7 +102,7 @@ const quickActions = [
   </section>
 
   <section class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-    <div class="rounded-2xl border border-brand-200 bg-white p-5 text-sm text-brand-700 shadow-sm dark:border-brand-800 dark:bg-brand-900 dark:text-brand-200">
+    <div class="rounded-2xl border border-brand-200 bg-white p-5 text-sm text-brand-700 shadow-sm dark:border-night-800 dark:bg-night-900 dark:text-night-200">
       Bent Grass sits within two overlapping metro districts — <strong>Woodmen Hills Metro District (WHMD)</strong>
       and <strong>Bent Grass Metro District (BGMD)</strong>. With multiple entities providing services, it's easy to
       get confused about who to contact. This site consolidates events, resources, and guidance in one place.
@@ -110,39 +110,39 @@ const quickActions = [
   </section>
 
   <section class="mx-auto max-w-6xl px-4 py-6 sm:px-6" aria-labelledby="who-to-contact">
-    <h2 id="who-to-contact" class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">Who do I contact about…?</h2>
-    <p class="mt-2 text-brand-700 dark:text-brand-200">Pick your situation to see who handles it and the full answer.</p>
+    <h2 id="who-to-contact" class="font-display text-2xl font-semibold text-brand-900 dark:text-night-50">Who do I contact about…?</h2>
+    <p class="mt-2 text-brand-700 dark:text-night-200">Pick your situation to see who handles it and the full answer.</p>
     <ul class="mt-5 grid gap-3 md:grid-cols-2">
       {contactTopics.map((item) => (
         <li>
           <a
             href={item.href}
-            class="group flex h-full items-center justify-between gap-4 rounded-2xl border border-brand-200 bg-white p-4 shadow-sm transition hover:border-brand-400 hover:shadow-md dark:border-brand-800 dark:bg-brand-900 dark:hover:border-brand-600"
+            class="group flex h-full items-center justify-between gap-4 rounded-2xl border border-brand-200 bg-white p-4 shadow-sm transition hover:border-brand-400 hover:shadow-md dark:border-night-800 dark:bg-night-900 dark:hover:border-brand-600"
           >
             <span>
-              <span class="block font-semibold text-brand-900 dark:text-brand-50">{item.topic}</span>
-              <span class="mt-1 block text-sm text-brand-700 dark:text-brand-200">{item.who}</span>
+              <span class="block font-semibold text-brand-900 dark:text-night-50">{item.topic}</span>
+              <span class="mt-1 block text-sm text-brand-700 dark:text-night-200">{item.who}</span>
             </span>
-            <span class="shrink-0 text-brand-500 transition group-hover:translate-x-0.5 dark:text-brand-300" aria-hidden="true">&rarr;</span>
+            <span class="shrink-0 text-brand-500 transition group-hover:translate-x-0.5 dark:text-night-300" aria-hidden="true">&rarr;</span>
           </a>
         </li>
       ))}
     </ul>
-    <p class="mt-4 text-sm text-brand-700 dark:text-brand-200">
+    <p class="mt-4 text-sm text-brand-700 dark:text-night-200">
       Not on the list? <a href="/faq" class="font-semibold underline hover:text-brand-900 dark:hover:text-white">Browse the full FAQ</a>
       or <a href="/contact-get-involved" class="font-semibold underline hover:text-brand-900 dark:hover:text-white">reach out to us</a>.
     </p>
   </section>
 
   <section class="mx-auto max-w-6xl px-4 py-6 sm:px-6" aria-labelledby="common-tasks">
-    <h2 id="common-tasks" class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">Common tasks</h2>
+    <h2 id="common-tasks" class="font-display text-2xl font-semibold text-brand-900 dark:text-night-50">Common tasks</h2>
     <ul class="mt-4 flex flex-wrap gap-3">
       {quickActions.map((action) => (
         <li>
           <a
             href={action.href}
             {...(action.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-            class="inline-flex min-h-11 items-center rounded-full border border-brand-300 px-5 py-2 text-sm font-semibold text-brand-800 hover:bg-brand-100 dark:border-brand-700 dark:text-brand-100 dark:hover:bg-brand-900"
+            class="inline-flex min-h-11 items-center rounded-full border border-brand-300 px-5 py-2 text-sm font-semibold text-brand-800 hover:bg-brand-100 dark:border-night-700 dark:text-night-100 dark:hover:bg-night-900"
           >
             {action.label}
             {action.external && <span class="sr-only"> (opens in a new tab)</span>}
@@ -155,8 +155,8 @@ const quickActions = [
   {upcomingEvents.length > 0 && (
     <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6" data-upcoming-section data-limit={UPCOMING_LIMIT}>
       <div class="flex items-baseline justify-between">
-        <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">Upcoming Events</h2>
-        <a href="/events-calendar" class="text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-brand-200 dark:hover:text-white">View all &rarr;</a>
+        <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-night-50">Upcoming Events</h2>
+        <a href="/events-calendar" class="text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-night-200 dark:hover:text-white">View all &rarr;</a>
       </div>
       <div class="mt-5 grid gap-5 md:grid-cols-3">
         {upcomingEvents.map((event, index) => (
@@ -171,8 +171,8 @@ const quickActions = [
   {news.length > 0 && (
     <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <div class="flex items-baseline justify-between">
-        <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">Latest News</h2>
-        <a href="/news-announcements" class="text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-brand-200 dark:hover:text-white">View all &rarr;</a>
+        <h2 class="font-display text-2xl font-semibold text-brand-900 dark:text-night-50">Latest News</h2>
+        <a href="/news-announcements" class="text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-night-200 dark:hover:text-white">View all &rarr;</a>
       </div>
       <div class="mt-5 grid gap-5 md:grid-cols-3">
         {news.map((item) => <NewsCard entry={item} compact />)}

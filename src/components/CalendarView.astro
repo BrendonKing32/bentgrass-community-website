@@ -28,22 +28,22 @@ const eventData = sortedEvents.map((entry) => {
 ---
 
 <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6" data-calendar>
-  <div data-calendar-ui hidden class="rounded-2xl border border-brand-200 bg-white p-4 shadow-sm sm:p-6 dark:border-stone-600 dark:bg-stone-800">
+  <div data-calendar-ui hidden class="rounded-2xl border border-brand-200 bg-white p-4 shadow-sm sm:p-6 dark:border-night-600 dark:bg-night-800">
     <div class="flex items-center justify-between gap-3">
       <button
         type="button"
         data-calendar-prev
-        class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-brand-300 px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 dark:border-stone-600 dark:text-brand-100 dark:hover:bg-stone-700"
+        class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-brand-300 px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 dark:border-night-600 dark:text-night-100 dark:hover:bg-night-700"
         aria-label="Previous month"
       >
         <span aria-hidden="true">&larr;</span>
         <span class="sr-only sm:not-sr-only sm:ml-1">Previous</span>
       </button>
-      <h2 id="calendar-month-label" class="font-display text-xl font-semibold text-brand-900 sm:text-2xl dark:text-brand-50" aria-live="polite"></h2>
+      <h2 id="calendar-month-label" class="font-display text-xl font-semibold text-brand-900 sm:text-2xl dark:text-night-50" aria-live="polite"></h2>
       <button
         type="button"
         data-calendar-next
-        class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-brand-300 px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 dark:border-stone-600 dark:text-brand-100 dark:hover:bg-stone-700"
+        class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-brand-300 px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 dark:border-night-600 dark:text-night-100 dark:hover:bg-night-700"
         aria-label="Next month"
       >
         <span class="sr-only sm:not-sr-only sm:mr-1">Next</span>
@@ -56,13 +56,13 @@ const eventData = sortedEvents.map((entry) => {
         type="button"
         data-calendar-today
         hidden
-        class="inline-flex min-h-11 items-center rounded-md border border-brand-300 px-4 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 dark:border-stone-600 dark:text-brand-100 dark:hover:bg-stone-700"
+        class="inline-flex min-h-11 items-center rounded-md border border-brand-300 px-4 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 dark:border-night-600 dark:text-night-100 dark:hover:bg-night-700"
       >
         Back to today
       </button>
     </div>
 
-    <div class="mt-5 grid grid-cols-7 border-b border-brand-200 text-center text-xs font-semibold uppercase tracking-wide text-brand-600 dark:border-stone-600 dark:text-brand-200" aria-hidden="true">
+    <div class="mt-5 grid grid-cols-7 border-b border-brand-200 text-center text-xs font-semibold uppercase tracking-wide text-brand-600 dark:border-night-600 dark:text-night-200" aria-hidden="true">
       <span class="pb-2">Sun</span>
       <span class="pb-2">Mon</span>
       <span class="pb-2">Tue</span>
@@ -75,7 +75,7 @@ const eventData = sortedEvents.map((entry) => {
 
     <div data-calendar-agenda class="mt-6 sm:hidden"></div>
 
-    <div data-calendar-details class="mt-6 border-t border-brand-200 pt-6 dark:border-stone-600" aria-live="polite"></div>
+    <div data-calendar-details class="mt-6 border-t border-brand-200 pt-6 dark:border-night-600" aria-live="polite"></div>
   </div>
 
   <div id="calendar-event-templates" class="hidden" aria-hidden="true">
@@ -86,26 +86,26 @@ const eventData = sortedEvents.map((entry) => {
         : date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
 
       return (
-        <article data-event-template={entry.id} class="hidden rounded-xl border border-brand-200 bg-brand-50/50 p-5 dark:border-stone-700 dark:bg-stone-900">
+        <article data-event-template={entry.id} class="hidden rounded-xl border border-brand-200 bg-brand-50/50 p-5 dark:border-night-700 dark:bg-night-900">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h3 class="font-display text-xl font-semibold text-brand-900 dark:text-brand-50">{title}</h3>
-              <p class="mt-1 text-sm font-medium text-brand-600 dark:text-brand-200">{dateLabel}{time && ` · ${time}`}</p>
-              {location && <p class="text-sm text-brand-600 dark:text-brand-200">{location}</p>}
+              <h3 class="font-display text-xl font-semibold text-brand-900 dark:text-night-50">{title}</h3>
+              <p class="mt-1 text-sm font-medium text-brand-600 dark:text-night-200">{dateLabel}{time && ` · ${time}`}</p>
+              {location && <p class="text-sm text-brand-600 dark:text-night-200">{location}</p>}
             </div>
             <button
               type="button"
               data-calendar-download={entry.id}
-              class="rounded-md border border-brand-300 bg-white px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 dark:border-stone-600 dark:bg-stone-800 dark:text-brand-100 dark:hover:bg-stone-700"
+              class="rounded-md border border-brand-300 bg-white px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 dark:border-night-600 dark:bg-night-800 dark:text-night-100 dark:hover:bg-night-700"
             >
               Download .ics
             </button>
           </div>
-          <div class="prose prose-sm mt-4 max-w-none text-brand-800 dark:text-brand-100">
+          <div class="prose prose-sm mt-4 max-w-none text-brand-800 dark:text-night-100">
             <Content />
           </div>
           {link && (
-            <a href={link} target="_blank" rel="noopener" class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-brand-200 dark:hover:text-white">
+            <a href={link} target="_blank" rel="noopener" class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-night-200 dark:hover:text-white">
               {linkLabel ?? "Learn more"}
               <span aria-hidden="true">&rarr;</span>
             </a>
@@ -115,8 +115,8 @@ const eventData = sortedEvents.map((entry) => {
     })}
   </div>
 
-  <section data-calendar-fallback aria-labelledby="calendar-fallback-title" class="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm dark:border-brand-800 dark:bg-brand-900">
-    <h2 id="calendar-fallback-title" class="font-display text-2xl font-semibold text-brand-900 dark:text-brand-50">Neighborhood events</h2>
+  <section data-calendar-fallback aria-labelledby="calendar-fallback-title" class="rounded-2xl border border-brand-200 bg-white p-5 shadow-sm dark:border-night-800 dark:bg-night-900">
+    <h2 id="calendar-fallback-title" class="font-display text-2xl font-semibold text-brand-900 dark:text-night-50">Neighborhood events</h2>
     <ul class="mt-5 grid gap-4 md:grid-cols-2">
       {renderedEvents.map(({ entry, Content }) => {
         const { title, date, endDate, time, location, link, linkLabel } = entry.data;
@@ -125,18 +125,18 @@ const eventData = sortedEvents.map((entry) => {
           : date.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
 
         return (
-          <li class="rounded-xl border border-brand-200 bg-brand-50/50 p-5 dark:border-brand-800 dark:bg-brand-950">
+          <li class="rounded-xl border border-brand-200 bg-brand-50/50 p-5 dark:border-night-800 dark:bg-night-950">
             <article>
-              <h3 class="font-display text-xl font-semibold text-brand-900 dark:text-brand-50">{title}</h3>
-              <p class="mt-1 text-sm font-medium text-brand-600 dark:text-brand-300">
+              <h3 class="font-display text-xl font-semibold text-brand-900 dark:text-night-50">{title}</h3>
+              <p class="mt-1 text-sm font-medium text-brand-600 dark:text-night-300">
                 <time datetime={date.toISOString().slice(0, 10)}>{dateLabel}</time>{time && ` · ${time}`}
               </p>
-              {location && <p class="text-sm text-brand-600 dark:text-brand-300">{location}</p>}
-              <div class="prose prose-sm mt-3 max-w-none text-brand-800 dark:text-brand-100">
+              {location && <p class="text-sm text-brand-600 dark:text-night-300">{location}</p>}
+              <div class="prose prose-sm mt-3 max-w-none text-brand-800 dark:text-night-100">
                 <Content />
               </div>
               {link && (
-                <a href={link} target="_blank" rel="noopener" class="mt-3 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-brand-200 dark:hover:text-white">
+                <a href={link} target="_blank" rel="noopener" class="mt-3 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-night-200 dark:hover:text-white">
                   {linkLabel ?? "Learn more"}
                   <span aria-hidden="true">&rarr;</span>
                 </a>
@@ -275,14 +275,14 @@ const eventData = sortedEvents.map((entry) => {
       const dayEvents = eventsForDay(selectedKey);
       details.replaceChildren();
       const heading = document.createElement("h2");
-      heading.className = "font-display text-xl font-semibold text-brand-900 dark:text-brand-50";
+      heading.className = "font-display text-xl font-semibold text-brand-900 dark:text-night-50";
       const selectedDate = new Date(`${selectedKey}T12:00:00`);
       heading.textContent = selectedDate.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
       details.append(heading);
 
       if (dayEvents.length === 0) {
         const empty = document.createElement("p");
-        empty.className = "mt-2 text-brand-600 dark:text-brand-300";
+        empty.className = "mt-2 text-brand-600 dark:text-night-300";
         empty.textContent = "No events scheduled for this day.";
         details.append(empty);
         return;
@@ -310,13 +310,13 @@ const eventData = sortedEvents.map((entry) => {
         .sort((a, b) => a.dateKey.localeCompare(b.dateKey) || a.title.localeCompare(b.title));
 
       const heading = document.createElement("h2");
-      heading.className = "font-display text-lg font-semibold text-brand-900 dark:text-brand-50";
+      heading.className = "font-display text-lg font-semibold text-brand-900 dark:text-night-50";
       heading.textContent = "Events this month";
       agenda.append(heading);
 
       if (monthEvents.length === 0) {
         const empty = document.createElement("p");
-        empty.className = "mt-2 text-brand-600 dark:text-brand-300";
+        empty.className = "mt-2 text-brand-600 dark:text-night-300";
         empty.textContent = "No events scheduled this month.";
         agenda.append(empty);
         return;
@@ -330,13 +330,13 @@ const eventData = sortedEvents.map((entry) => {
         const button = document.createElement("button");
         button.type = "button";
         button.className =
-          "flex min-h-11 w-full flex-col items-start rounded-md border border-brand-200 bg-white px-3 py-2 text-left hover:border-brand-400 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-brand-500 dark:hover:bg-stone-800";
+          "flex min-h-11 w-full flex-col items-start rounded-md border border-brand-200 bg-white px-3 py-2 text-left hover:border-brand-400 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-offset-2 dark:border-night-700 dark:bg-night-900 dark:hover:border-brand-500 dark:hover:bg-night-800";
         const when = document.createElement("span");
-        when.className = "text-xs font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-300";
+        when.className = "text-xs font-semibold uppercase tracking-wide text-brand-600 dark:text-night-300";
         const range = event.endDateKey > event.dateKey ? ` – ${shortDay(event.endDateKey)}` : "";
         when.textContent = `${shortDay(startKey)}${range}${event.time ? ` · ${event.time}` : ""}`;
         const title = document.createElement("span");
-        title.className = "font-semibold text-brand-900 dark:text-brand-50";
+        title.className = "font-semibold text-brand-900 dark:text-night-50";
         title.textContent = event.title;
         button.append(when, title);
         button.addEventListener("click", () => selectDay(startKey, true));
@@ -356,7 +356,7 @@ const eventData = sortedEvents.map((entry) => {
 
       for (let index = 0; index < firstDay; index += 1) {
         const blank = document.createElement("div");
-        blank.className = "min-h-14 rounded-md bg-brand-50/40 sm:min-h-24 dark:bg-stone-900/50";
+        blank.className = "min-h-14 rounded-md bg-brand-50/40 sm:min-h-24 dark:bg-night-900/50";
         blank.setAttribute("aria-hidden", "true");
         grid.append(blank);
       }
@@ -368,10 +368,10 @@ const eventData = sortedEvents.map((entry) => {
         button.type = "button";
         button.dataset.dayKey = key;
         button.className =
-          "flex min-h-14 flex-col items-start rounded-md border border-brand-200 bg-white p-1.5 text-left sm:p-2 hover:border-brand-400 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-inset sm:min-h-24 dark:border-stone-700 dark:bg-stone-900 dark:hover:border-brand-500 dark:hover:bg-stone-800";
+          "flex min-h-14 flex-col items-start rounded-md border border-brand-200 bg-white p-1.5 text-left sm:p-2 hover:border-brand-400 hover:bg-brand-50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:ring-inset sm:min-h-24 dark:border-night-700 dark:bg-night-900 dark:hover:border-brand-500 dark:hover:bg-night-800";
         button.setAttribute("aria-label", `${key === todayKey ? "Today, " : ""}${new Date(`${key}T12:00:00`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}${dayEvents.length ? `, ${dayEvents.length} event${dayEvents.length === 1 ? "" : "s"}` : ""}`);
         const number = document.createElement("span");
-        number.className = "text-sm font-semibold text-brand-800 dark:text-brand-50";
+        number.className = "text-sm font-semibold text-brand-800 dark:text-night-50";
         number.textContent = String(day);
         if (key === todayKey) {
           number.className =

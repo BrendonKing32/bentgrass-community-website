@@ -10,7 +10,7 @@ const dark = variant === "dark";
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
 ---
 
-<div class:list={["newsletter-signup", dark ? "text-brand-100" : "text-brand-700 dark:text-brand-200"]} data-variant={variant}>
+<div class:list={["newsletter-signup", dark ? "text-brand-100" : "text-brand-700 dark:text-night-200"]} data-variant={variant}>
   <form method="POST" action="/api/subscribe" class="mx-auto flex max-w-md flex-col gap-3" data-newsletter-form>
     <label class="sr-only" for="newsletter-email">Email address</label>
     <input
