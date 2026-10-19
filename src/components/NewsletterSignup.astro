@@ -6,11 +6,10 @@ interface Props {
 
 const { variant = "dark" } = Astro.props;
 const dark = variant === "dark";
-// Public Turnstile site key (safe to commit). Local dev uses Cloudflare's always-passes
-// test key, since the real widget only accepts the site's own hostnames.
-const siteKey =
-  import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ||
-  (import.meta.env.DEV ? "1x00000000000000000000AA" : "0x4AAAAAAFZnbfbhUQnwF3EG");
+// Keep test-key overrides local to Astro dev; deployed builds always use the production key.
+const siteKey = import.meta.env.DEV
+  ? import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"
+  : "0x4AAAAAAFZnbfbhUQnwF3EG";
 ---
 
 <div class:list={["newsletter-signup", dark ? "text-brand-100" : "text-brand-700 dark:text-night-200"]} data-variant={variant}>
