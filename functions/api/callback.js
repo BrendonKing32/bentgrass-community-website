@@ -9,15 +9,16 @@ function renderScript(message) {
   <body>
     <script>
       (function () {
+        const opener = window.opener;
+        if (!opener) return;
+
         function receiveMessage(e) {
-          window.opener.postMessage(
-            ${JSON.stringify(message)},
-            e.origin
-          );
+          if (e.origin !== window.location.origin || e.source !== opener) return;
+          opener.postMessage(${JSON.stringify(message)}, window.location.origin);
           window.removeEventListener("message", receiveMessage, false);
         }
         window.addEventListener("message", receiveMessage, false);
-        window.opener.postMessage("authorizing:github", "*");
+        opener.postMessage("authorizing:github", window.location.origin);
       })();
     </script>
   </body>
@@ -66,7 +67,7 @@ export async function onRequestGet(context) {
 
   return new Response(renderScript(message), {
     headers: {
-      "Content-Type": "text/html",
+      "Content-Type": "text/html; charset=utf-8",
       "Set-Cookie": "decap_oauth_state=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0",
     },
   });
