@@ -1,5 +1,8 @@
 # Bent Grass Neighborhood Website
 
+> [!IMPORTANT]
+> **This project is archived.** No further work will be completed at this time. The repository is kept for reference only; issues and pull requests will not be reviewed or merged.
+
 The Bent Grass / Falcon Meadows community site — rebuilt as a static [Astro](https://astro.build) site, styled with Tailwind CSS, deployed on [Cloudflare Workers](https://developers.cloudflare.com/workers/static-assets/) (static assets + a small Worker for the content-admin login flow), and editable by volunteers through a browser-based content admin ([Sveltia CMS](https://github.com/sveltia/sveltia-cms)).
 
 Live site: https://www.bentgrassneighborhood.org
